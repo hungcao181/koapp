@@ -1,5 +1,7 @@
-var koa = require('koa');
-var app = koa();
+"use strict";
+var koa     = require('koa');
+var router  = require('koa-router')();
+var app     = koa();
 
 //logger
 
@@ -12,8 +14,19 @@ app.use(function *(next) {
 
 //response
 
-app.use(function *() {
-    this.body = 'Hello World';
-});
+// app.use(function *() {
+//     this.body = 'Hello World';
+// });
+
+router.get('/', require('./app/views/index.js'));
+
+app
+    .use(router.routes())
+    .use(router.allowedMethods());
+
+
+app.on('error', function (err, context) {
+    app.logger.error(err);
+})
 
 app.listen(3000);
