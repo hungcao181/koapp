@@ -1,6 +1,7 @@
 "use strict";
-var koa     = require('koa');
-var app     = koa();
+var koa         = require('koa');
+var compress    = require('koa-compress');
+var app         = koa();
 
 //logger
 
@@ -10,6 +11,12 @@ app.use(function *(next) {
     var ms = new Date - start;
     console.log('%s %s - %s', this.method, this.url, ms);
 });
+
+//compressing
+
+app.use(compress({
+    flush: require('zlib').Z_SYNC_FLUSH
+}));
 
 //routing
 

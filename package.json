@@ -26,6 +26,7 @@
   "homepage": "https://github.com/hungcao181/koapp#readme",
   "dependencies": {
     "koa": "^1.1.2",
+    "koa-compress": "^1.0.8",
     "koa-router": "^5.3.0",
     "marko": "^2.7.31"
   }
