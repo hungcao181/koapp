@@ -1,6 +1,5 @@
 "use strict";
 var koa     = require('koa');
-var router  = require('koa-router')();
 var app     = koa();
 
 //logger
@@ -12,14 +11,9 @@ app.use(function *(next) {
     console.log('%s %s - %s', this.method, this.url, ms);
 });
 
-//response
+//routing
 
-// app.use(function *() {
-//     this.body = 'Hello World';
-// });
-
-router.get('/', require('./app/views/index.js'));
-
+var router = require('./app/routers/index.js');
 app
     .use(router.routes())
     .use(router.allowedMethods());

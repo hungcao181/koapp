@@ -1,10 +1,18 @@
 "use strict";
 require('marko/node-require').install();
 let marko = require('marko');
-let template = require(__dirname + '/template.marko');
+let homeTpl = require('./home.marko');
+let aboutTpl = require('./about.marko');
 
-module.exports = function* (next) {
-    template.render({
-        name: 'Hung'
-    }, this.res);
-}
+module.exports = {
+    home: function* (next) {
+        homeTpl.render({
+            name: 'Hung'
+        }, this.res);
+    },
+    about: function* (next) {
+        aboutTpl.render({
+            users: {}
+        }, this.res);
+    }    
+} 
