@@ -1,0 +1,30 @@
+{
+  "name": "koapp",
+  "version": "1.0.0",
+  "description": "an koa app from scratch",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "test": "gulp test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/hungcao181/koapp.git"
+  },
+  "keywords": [
+    "koa",
+    "gulp",
+    "starter",
+    "generator",
+    "es6"
+  ],
+  "author": "hungcao181",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/hungcao181/koapp/issues"
+  },
+  "homepage": "https://github.com/hungcao181/koapp#readme",
+  "dependencies": {
+    "koa": "^1.1.2"
+  }
+}

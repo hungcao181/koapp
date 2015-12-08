@@ -24,4 +24,17 @@ build/Release
 
 # Dependency directory
 # https://www.npmjs.org/doc/misc/npm-faq.html#should-i-check-my-node_modules-folder-into-git
+.DS_Store
+
 node_modules
+bower_components
+npm-debug.log
+
+dist
+test/tmp
+.tmp
+
+# .env* files
+config/.env*
+!.env.example
+!.env.sample
