@@ -7,7 +7,9 @@ function create(__helpers) {
       __renderer = __helpers.r,
       ______node_modules_marko_layout_use_tag_js = __renderer(require("marko-layout/use-tag")),
       __tag = __helpers.t,
-      ______node_modules_marko_layout_put_tag_js = __renderer(require("marko-layout/put-tag"));
+      ______node_modules_marko_layout_put_tag_js = __renderer(require("marko-layout/put-tag")),
+      forEach = __helpers.f,
+      escapeXml = __helpers.x;
 
   return function render(data, out) {
     __tag(out,
@@ -31,7 +33,15 @@ function create(__helpers) {
               "layout": __layoutHelper
             },
             function(out) {
-              out.w('users list here');
+              out.w('<ul>');
+
+              forEach(data.users, function(user) {
+                out.w('<li>' +
+                  escapeXml(user.name) +
+                  '</li>');
+              });
+
+              out.w('</ul>');
             });
         },
         "*": {

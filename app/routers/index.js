@@ -1,6 +1,6 @@
 var router  = require('koa-router')();
-var views = require('../views/index.js');
-router.get('/', views.home);
-router.get('/about', views.about);
+var navigation = require('./navigation.js');
+router.get('/', navigation.home);
+router.get('/about', navigation.about);
 
 module.exports = router;

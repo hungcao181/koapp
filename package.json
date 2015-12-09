@@ -5,7 +5,7 @@
   "main": "server.js",
   "scripts": {
     "start": "node server.js",
-    "test": "gulp test"
+    "test": "mocha test"
   },
   "repository": {
     "type": "git",
@@ -25,9 +25,13 @@
   },
   "homepage": "https://github.com/hungcao181/koapp#readme",
   "dependencies": {
+    "expect": "^1.13.0",
     "koa": "^1.1.2",
     "koa-compress": "^1.0.8",
     "koa-router": "^5.3.0",
-    "marko": "^2.7.31"
+    "marko": "^2.7.31",
+    "mocha": "^2.3.4",
+    "monk": "https://github.com/Automattic/monk.git",
+    "should": "^8.0.0"
   }
 }
