@@ -1,14 +1,6 @@
-var monkdb    = require('monk')('localhost/koapp');
-var users = monkdb.get("users");
-    users.drop();
-users.find({}, function (err, docs) {
-    if (err) { return;}
-    if (docs.length == 0) {
-        users.insert(
-            {name: 'admin', description: 'he can do everything'}
-            );
-    };
-})
+//Mangage mongodb process https://docs.mongodb.org/v3.0/tutorial/install-mongodb-on-windows/
+"use strict";
+var monkdb      = require('monk')('localhost/koapp');
 
 module.exports = {
     monkdb: monkdb    

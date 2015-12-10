@@ -38,6 +38,8 @@ function create(__helpers) {
               forEach(data.users, function(user) {
                 out.w('<li>' +
                   escapeXml(user.name) +
+                  ' - ' +
+                  escapeXml(user.description) +
                   '</li>');
               });
 

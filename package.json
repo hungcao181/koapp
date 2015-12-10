@@ -25,6 +25,7 @@
   },
   "homepage": "https://github.com/hungcao181/koapp#readme",
   "dependencies": {
+    "co-monk": "^1.0.0",
     "expect": "^1.13.0",
     "koa": "^1.1.2",
     "koa-compress": "^1.0.8",
