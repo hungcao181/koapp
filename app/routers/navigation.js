@@ -17,7 +17,7 @@ module.exports = {
     },
     about: function* (next) {
         let data = {};
-        data.users = yield users.find({});
+        data.users = yield users.find({name: 'Thao'});
         aboutTpl.render(data, this.res);
     },
     initUsers: function* (next) {
@@ -26,7 +26,8 @@ module.exports = {
             
             yield [
             users.insert({name: 'Admin', description: 'He can do everything'}),
-            users.insert({name: 'Hung', description: 'He is owner. He can do everything'})
+            users.insert({name: 'Hung', description: 'He is owner. He can do everything'}),
+            users.insert({name: 'Thao', description: 'She is owner of owner. She can do everything'})
             ];
         });    
     }    
