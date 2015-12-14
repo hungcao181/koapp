@@ -1,8 +1,8 @@
 "use strict";
 var koa         = require('koa');
 var compress    = require('koa-compress');
+var serve       = require('koa-static');
 var app         = koa();
-
 //logger
 
 app.use(function *(next) {
@@ -24,6 +24,9 @@ var router = require('./app/routers/index.js');
 app
     .use(router.routes())
     .use(router.allowedMethods());
+
+//static file serve
+app.use(serve(__dirname + '/public'));
 
 
 app.on('error', function (err, context) {

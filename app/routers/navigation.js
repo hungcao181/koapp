@@ -3,6 +3,7 @@ require('marko/node-require').install();
 let marko       = require('marko');
 let homeTpl     = require('../views/home.marko');
 let aboutTpl    = require('../views/about.marko');
+let profileTpl  = require('../views/profile.marko');
 let monkdb      = require('../models/config').monkdb;
 let wrap        = require('co-monk');
 let co          = require('co');
@@ -19,6 +20,11 @@ module.exports = {
         let data = {};
         data.users = yield users.find({name: 'Thao'});
         aboutTpl.render(data, this.res);
+    },
+    profile: function* (next) {
+        let data = {};
+        //data.users = yield users.find({name: 'Thao'});
+        profileTpl.render(data, this.res);
     },
     initUsers: function* (next) {
         yield users.remove({});
