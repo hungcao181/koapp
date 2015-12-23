@@ -4,9 +4,47 @@ var gulp    = require('gulp'),
     nodemon = require('gulp-nodemon'),
     mocha   = require('gulp-mocha-co'),
     watch   = require('gulp-watch'),
-    livereload  = require('gulp-livereload'),
+    concat = require('gulp-concat'),//haven't used yet
+    gutil = require('gulp-util'),
+    sourcemaps = require('gulp-sourcemaps'),
+    livereload  = require('gulp-livereload');
     // browserSync = require('browser-sync');
-    browserSync = require('browser-sync').create();
+
+var browserSync = require('browser-sync').create();
+var browserify = require('browserify');
+var babelify = require('babelify');
+var watchify = require('watchify');
+var source = require('vinyl-source-stream');
+var buffer = require('vinyl-buffer');
+var fs = require("fs");
+var assign = require('lodash.assign');
+
+//------------browserify---------------//
+var customOpts = {
+    entries: 'site/js/main.js', 
+    extensions: ['.jsx', '.js'], 
+    debug: true
+};
+var opts = assign({}, watchify.args, customOpts);
+var b = watchify(browserify(opts));
+b.transform('babelify', {presets: ['es2015', 'react']});
+
+gulp.task('browserify', bundle);
+b.on('update', bundle);
+b.on('log', gutil.log);
+function bundle() {
+    return b.bundle()
+    //log errors if they happen
+    .on('error', gutil.log.bind(gutil, 'Browserify Error'))
+    .pipe(source('main.js'))
+    // optional, remove if you don't need to buffer file contents
+    .pipe(buffer())
+    // optional, remove if you dont want sourcemaps
+    .pipe(sourcemaps.init({loadMaps: true})) // loads map from browserify file
+       // Add transformation tasks to the pipeline here.
+    .pipe(sourcemaps.write('./')) // writes .map file
+    .pipe(gulp.dest('public/js'));    
+}
 
 //-----------running mongod-------------//
 var exec = require('child_process').exec;
@@ -33,12 +71,12 @@ gulp.task('nodemon', function () {
 
 gulp.task('watch', function () {
     gulp.src(['./app/**/*.js'], {read: true})
-    .pipe(watch())
+    .pipe(watch(['./app/**/*.js']))
     .on('change', browserSync.reload);
     // .pipe(livereload());
 });
 
-gulp.task('default', ['test', 'nodemon', 'watch'], function () {
+gulp.task('default', ['test', 'nodemon'], function () {
     return gulp.once('end', function () {
         runCommand('mongo --eval \"use admin; db.shutdownServer();\"');
     })

@@ -2,3 +2,11 @@
     background-color: black;
     color: white;
 }
+.item.room {
+    float: left;
+    width: 304px;
+    padding: 5px;
+}
+#comments {
+    clear: both;
+}
