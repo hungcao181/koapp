@@ -22,7 +22,7 @@ function create(__helpers) {
               "layout": __layoutHelper
             },
             function(out) {
-              out.w('About');
+              out.w('Rooms');
             });
           __tag(out,
             ______node_modules_marko_layout_put_tag_js,
@@ -32,6 +32,15 @@ function create(__helpers) {
             },
             function(out) {
               out.w('<div id="topnavigation" class="container"></div><div id="main" class="container"></div><div id="rooms" class="container"></div><div id="comments" class="container"></div>');
+            });
+          __tag(out,
+            ______node_modules_marko_layout_put_tag_js,
+            {
+              "into": "script",
+              "layout": __layoutHelper
+            },
+            function(out) {
+              out.w('<script src="js/main.js"></script>');
             });
         },
         "*": {

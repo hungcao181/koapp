@@ -11,18 +11,15 @@ ReactDOM.render(
     <ItemList/>,
     document.getElementById('rooms')
 );
-var comments = [
-  {id: 1, author: "Pete Hunt", text: "This is one comment"},
-  {id: 2, author: "Jordan Walke", text: "This is *another* comment"}
-];
 
 ReactDOM.render(
-  <CommentBox data={comments} />,
-  document.getElementById('comments')
+//   <CommentBox data={comments} />,
+    <CommentBox url='/api/comments'  pollInterval={20000}/>,
+    document.getElementById('comments')
 );
 
 function onSelectAlert(eventKey, href) {
-  alert('Alert from menu item.\neventKey: "' + eventKey + '"\nhref: "' + href + '"');
+    alert('Alert from menu item.\neventKey: "' + eventKey + '"\nhref: "' + href + '"');
 }
 
 var buttonGroupInstance = (

@@ -2,8 +2,10 @@
 var koa         = require('koa');
 var compress    = require('koa-compress');
 var serve       = require('koa-static');
+var logger      = require('koa-logger');
 var app         = koa();
-//logger
+
+app.use(logger());
 
 app.use(function *(next) {
     var start = new Date;

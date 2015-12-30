@@ -22,3 +22,9 @@ http://derickbailey.com/2014/06/26/nodemon-vs-grunt-contrib-watch-whats-the-diff
 
 http://www.browsersync.io/docs/gulp/
 or use gulp-livereload
+
+** How to use request module to make rest api call **
+http://blog.modulus.io/node.js-tutorial-how-to-use-request-module
+
+** Monk tutorial **
+http://www.marcusoft.net/2014/02/mnb-monk.html

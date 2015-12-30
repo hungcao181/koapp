@@ -10,6 +10,9 @@ let wrap        = require('co-monk');
 let co          = require('co');
 
 let users = wrap(monkdb.get("users"));
+let rooms = wrap(monkdb.get("rooms"));
+let initRooms = require('./initData.js').initRooms;
+let initUsers = require('./initData.js').initUsers;
 
 module.exports = {
     home: function* (next) {
@@ -19,28 +22,39 @@ module.exports = {
     },
     about: function* (next) {
         let data = {};
-        data.users = yield users.find({name: 'Thao'});
+        data.users = yield users.find({});
+        if (data.users.length ==0) { 
+            yield initUsers();
+        }
         aboutTpl.render(data, this.res);
     },
     profile: function* (next) {
         let data = {};
-        //data.users = yield users.find({name: 'Thao'});
         profileTpl.render(data, this.res);
     },
     rooms: function* (next) {
-        let data = require('../models/mock-data.js');
-        //data.users = yield users.find({name: 'Thao'});
+        let data = yield rooms.find({});
+        if (data.length == 0) {
+            yield initRooms();
+        }
         roomTpl.render(data, this.res);
     },
     initUsers: function* (next) {
         yield users.remove({});
         co(function *() {
-            
-            yield [
-            users.insert({name: 'Admin', description: 'He can do everything'}),
-            users.insert({name: 'Hung', description: 'He is owner. He can do everything'}),
-            users.insert({name: 'Thao', description: 'She is owner of owner. She can do everything'})
-            ];
-        });    
-    }    
+            let data = require('../models/mockdata/users.js');
+            yield data.map(user => {
+                rooms.insert(user);
+            });
+        });
+    },
+    initRooms: function* (next) {
+        yield rooms.remove({});
+        co(function *() {
+            let data = require('../models/mockdata/rooms.js');
+            yield data.map(room => {
+                rooms.insert(room);
+            });
+        });
+    }            
 } 
