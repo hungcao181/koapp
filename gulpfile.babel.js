@@ -21,7 +21,7 @@ var assign = require('lodash.assign');
 
 //------------browserify---------------//
 var customOpts = {
-    entries: 'site/js/main.js', 
+    entries: 'src/main.js', 
     extensions: ['.jsx', '.js'], 
     debug: true
 };

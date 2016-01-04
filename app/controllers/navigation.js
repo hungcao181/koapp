@@ -19,6 +19,7 @@ module.exports = {
         homeTpl.render({
             name: 'Hung'
         }, this.res);
+        // this.body = 'hello';
     },
     about: function* (next) {
         let data = {};
@@ -38,23 +39,5 @@ module.exports = {
             yield initRooms();
         }
         roomTpl.render(data, this.res);
-    },
-    initUsers: function* (next) {
-        yield users.remove({});
-        co(function *() {
-            let data = require('../models/mockdata/users.js');
-            yield data.map(user => {
-                rooms.insert(user);
-            });
-        });
-    },
-    initRooms: function* (next) {
-        yield rooms.remove({});
-        co(function *() {
-            let data = require('../models/mockdata/rooms.js');
-            yield data.map(room => {
-                rooms.insert(room);
-            });
-        });
-    }            
+    }
 } 
