@@ -1,7 +1,6 @@
 "use strict";
 let monkdb      = require('../models/config').monkdb;
 let wrap        = require('co-monk');
-let co          = require('co');
 let parse       = require('co-body');
 let initData    = require('./initData.js');
 let fs          = require('fs');
@@ -9,7 +8,7 @@ let comments = wrap(monkdb.get("comments"));
 let initComments = require('./initData.js').initComments;
  
 module.exports = {
-    comments: function* (next) {
+    list: function* (next) {
         let data = {};
         data.comments = yield comments.find({});
         if (data.comments.length ==0) { 
@@ -18,7 +17,7 @@ module.exports = {
         }
         this.body = data.comments;
     },
-    postComment: function* (next) {
+    add: function* (next) {
         let body = yield parse.form(this);
         let comment = {};
         comment.author = body.author;
@@ -29,7 +28,7 @@ module.exports = {
         let data = {comments: yield comments.find({})};
         this.body = data.comments;
     },
-    editComment: function* (next) {
+    edit: function* (next) {
         let  id = this.params.id;
         let body = yield parse.form(this);
         let comment = {text:body.text};
@@ -38,13 +37,13 @@ module.exports = {
         let data = {comments: yield comments.find({})};
         this.body = data;
     },
-    delComment: function* (next) {
+    delete: function* (next) {
         let  id = this.params.id; //'567d14b2d8305acc2924e682';
         let comment = yield comments.remove({_id: id});
         this.body = {comment: comment};
         // this.body = {id: id, query: this.query, thisid: this.id, request: this.request, params: this.params};
     },
-    showComment: function* (next) {
+    show: function* (next) {
         let  id = this.params.id; //'567d14b2d8305acc2924e682';
         let rowsDeleted = yield comments.find({_id: id});
         this.body = {rowsDeleted: rowsDeleted};

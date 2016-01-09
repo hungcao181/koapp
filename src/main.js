@@ -1,36 +1,45 @@
-// import "babel-polyfill";
 import React from 'react';
 import ReactDOM from 'react-dom';
-import {ItemList as Rooms} from './components/rooms.jsx';
-// import {CommentBox, CommentList, Comment} from './components/comments.jsx';
-var CommentBox = require('./components/comments.jsx');
-var ItemList = require('./components/rooms.jsx');
-import {ButtonGroup, MenuItem, DropdownButton, Button} from 'react-bootstrap/lib';
+// import {ItemList} from './components/RoomListItem.jsx';
+var ItemList = require('./components/RoomList.jsx');
 
-ReactDOM.render(
-    <ItemList/>,
-    document.getElementById('rooms')
-);
+var roomData;
+// roomData = require('./stores/data');
 
-ReactDOM.render(
-//   <CommentBox data={comments} />,
-    <CommentBox url='/api/comments'  pollInterval={20000}/>,
-    document.getElementById('comments')
-);
+import co from 'co';
+import coRequest from 'co-request';
+import request from 'request';
 
-function onSelectAlert(eventKey, href) {
-    alert('Alert from menu item.\neventKey: "' + eventKey + '"\nhref: "' + href + '"');
+let options = {
+    url: 'http://localhost:3000/rooms',
+    method: 'get'
+};
+
+var use = {request: false, coRequest: false};
+
+if (use.request) {
+    request(options, function (err, response, body) {
+        roomData=JSON.parse(body);
+        // console.log('body',roomData);
+        ReactDOM.render(
+            <ItemList data={roomData}/>,
+            document.getElementById('rooms')
+        );
+    });
+} else if (use.coRequest) {
+    co(function* () {
+        let response = yield coRequest(options);
+        roomData = JSON.parse(response.body);    
+        ReactDOM.render(
+            <ItemList data={roomData}/>,
+            document.getElementById('rooms')
+        );
+    }).catch(function (err) {
+        console.log(err);
+    });
+} else {
+    ReactDOM.render(
+        <ItemList data={roomData}/>,
+        document.getElementById('rooms')
+    );
 }
-
-var buttonGroupInstance = (
-  <ButtonGroup>
-    <DropdownButton bsStyle="success" title="Dropdown" id="callId">
-      <MenuItem id="1" onSelect={onSelectAlert}>Alert</MenuItem>
-      <MenuItem id="2" href="/flux.html">Link to Home</MenuItem>
-    </DropdownButton>
-    <Button bsStyle="info">Middle</Button>
-    <Button bsStyle="info">Right</Button>
-  </ButtonGroup>
-);
-
-ReactDOM.render(buttonGroupInstance, document.getElementById('topnavigation'));

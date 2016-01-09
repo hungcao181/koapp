@@ -33,7 +33,7 @@ module.exports = {
         let data = {};
         profileTpl.render(data, this.res);
     },
-    rooms: function* (next) {
+    karaoke: function* (next) {
         let data = yield rooms.find({});
         if (data.length == 0) {
             yield initRooms();

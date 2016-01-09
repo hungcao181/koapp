@@ -5,15 +5,20 @@ var navigation = require('../controllers/navigation.js');
 router.get('/', navigation.home);
 router.get('/about', navigation.about);
 router.get('/profile', navigation.profile);
-router.get('/rooms', navigation.rooms);
+router.get('/karaoke', navigation.karaoke);
 
 //comments
-var api = require('../controllers/api.js');
+var comments = require('../controllers/comments.js');
+router.get('/comments', comments.list);
+router.post('/comments', comments.add);
+router.get('/comments/:id', comments.show);
+router.put('/comments/:id', comments.edit);
+router.del('/comments/:id', comments.delete);
 
-router.get('/api/comments', api.comments);
-router.post('/api/comments', api.postComment);
-router.get('/api/comments/:id', api.showComment);
-router.put('/api/comments/:id', api.editComment);
-router.del('/api/comments/:id', api.delComment);
-
+//rooms
+var rooms = require('../controllers/rooms.js');
+router.get('/rooms', rooms.list);
+router.post('/rooms', rooms.add);
+router.get('/rooms/:id', rooms.show);
+router.delete('/rooms/:id', rooms.delete);
 module.exports = router;

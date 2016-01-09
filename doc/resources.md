@@ -28,3 +28,7 @@ http://blog.modulus.io/node.js-tutorial-how-to-use-request-module
 
 ** Monk tutorial **
 http://www.marcusoft.net/2014/02/mnb-monk.html
+
+** WebSockets vs REST: Understanding the Difference **
+https://www.pubnub.com/blog/2015-01-05-websockets-vs-rest-api-understanding-the-difference/
+

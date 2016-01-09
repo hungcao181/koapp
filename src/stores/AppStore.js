@@ -15,5 +15,6 @@ AppDispatcher.register(function (payload) {
     return true;
 });
 
-AppStore.data = require('./data');
+// AppStore.data = require('./data');
+AppStore.data = require('./rooms')();
 module.exports = AppStore;

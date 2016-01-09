@@ -5,7 +5,11 @@
 .item.room {
     float: left;
     width: 304px;
-    padding: 5px;
+    padding: 20px;
+}
+.item.room img{
+    width: 200px;
+    height: 100px;
 }
 #comments {
     clear: both;

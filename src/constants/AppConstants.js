@@ -1,4 +1,11 @@
+var keyMirror = require('keymirror');
+
 module.exports = {
-  ADD_ITEM: 'ADD_ITEM',
-  REMOVE_ITEM: 'REMOVE_ITEM'
+
+  ActionTypes: keyMirror({
+    ADD_ROOM: null,
+    UPDATE_ROOM: null,
+    DEL_ROOM: null,
+  })
+
 };
