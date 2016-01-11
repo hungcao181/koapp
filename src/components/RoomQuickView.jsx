@@ -4,6 +4,11 @@ let Modal = require('react-bootstrap/lib/Modal');
 let Button = require('react-bootstrap/lib/Button');
 let Popover = require('react-bootstrap/lib/Popover');
 let Tooltip = require('react-bootstrap/lib/Tooltip');
+let Image = require('react-bootstrap/lib/Image');
+let Grid = require('react-bootstrap/lib/Grid');
+let Row = require('react-bootstrap/lib/Row');
+let Col = require('react-bootstrap/lib/Col');
+
 let OverlayTrigger = require('react-bootstrap/lib/OverlayTrigger');
 
 var QuickView = React.createClass({
@@ -41,12 +46,13 @@ var QuickView = React.createClass({
                 <Modal.Title>Modal heading</Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
-                    <div className='row'>
-                        <div className='col-md-4'>
-                            <img src={data.image} alt={data.title} width="304" height="228"></img>
+                <Grid>
+                    <Row>
+                        <Col xs={4} md={4}>
+                            <Image src={data.image} alt={data.title} ></Image>
                             <figcaption>{data.title}</figcaption>
-                        </div>
-                        <div className='col-md-8'>
+                        </Col>
+                        <Col xs={8} md={8}>
                             <ul>
                                 <li>{data.description}</li>
                                 <li>price: {data.price}</li>
@@ -56,8 +62,9 @@ var QuickView = React.createClass({
                                 <li>Ended: {data.endTime}</li>
                                 <li>Duration: {data.duration}</li>
                             </ul>
-                        </div>            
-                    </div>
+                        </Col>            
+                    </Row>
+                    </Grid>
                     <div className='row'>
                         <div className='col-md-4'>
                         Comments

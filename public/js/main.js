@@ -97095,6 +97095,11 @@ var Modal = require('react-bootstrap/lib/Modal');
 var Button = require('react-bootstrap/lib/Button');
 var Popover = require('react-bootstrap/lib/Popover');
 var Tooltip = require('react-bootstrap/lib/Tooltip');
+var Image = require('react-bootstrap/lib/Image');
+var Grid = require('react-bootstrap/lib/Grid');
+var Row = require('react-bootstrap/lib/Row');
+var Col = require('react-bootstrap/lib/Col');
+
 var OverlayTrigger = require('react-bootstrap/lib/OverlayTrigger');
 
 var QuickView = React.createClass({
@@ -97154,64 +97159,68 @@ var QuickView = React.createClass({
                     Modal.Body,
                     null,
                     React.createElement(
-                        'div',
-                        { className: 'row' },
+                        Grid,
+                        null,
                         React.createElement(
-                            'div',
-                            { className: 'col-md-4' },
-                            React.createElement('img', { src: data.image, alt: data.title, width: '304', height: '228' }),
+                            Row,
+                            null,
                             React.createElement(
-                                'figcaption',
-                                null,
-                                data.title
-                            )
-                        ),
-                        React.createElement(
-                            'div',
-                            { className: 'col-md-8' },
+                                Col,
+                                { xs: 4, md: 4 },
+                                React.createElement(Image, { src: data.image, alt: data.title }),
+                                React.createElement(
+                                    'figcaption',
+                                    null,
+                                    data.title
+                                )
+                            ),
                             React.createElement(
-                                'ul',
-                                null,
+                                Col,
+                                { xs: 8, md: 8 },
                                 React.createElement(
-                                    'li',
+                                    'ul',
                                     null,
-                                    data.description
-                                ),
-                                React.createElement(
-                                    'li',
-                                    null,
-                                    'price: ',
-                                    data.price
-                                ),
-                                React.createElement(
-                                    'li',
-                                    null,
-                                    'Minimum: ',
-                                    data.MinimumAmount
-                                ),
-                                React.createElement(
-                                    'li',
-                                    null,
-                                    'Status: ',
-                                    data.status
-                                ),
-                                React.createElement(
-                                    'li',
-                                    null,
-                                    'Started: ',
-                                    data.startTime
-                                ),
-                                React.createElement(
-                                    'li',
-                                    null,
-                                    'Ended: ',
-                                    data.endTime
-                                ),
-                                React.createElement(
-                                    'li',
-                                    null,
-                                    'Duration: ',
-                                    data.duration
+                                    React.createElement(
+                                        'li',
+                                        null,
+                                        data.description
+                                    ),
+                                    React.createElement(
+                                        'li',
+                                        null,
+                                        'price: ',
+                                        data.price
+                                    ),
+                                    React.createElement(
+                                        'li',
+                                        null,
+                                        'Minimum: ',
+                                        data.MinimumAmount
+                                    ),
+                                    React.createElement(
+                                        'li',
+                                        null,
+                                        'Status: ',
+                                        data.status
+                                    ),
+                                    React.createElement(
+                                        'li',
+                                        null,
+                                        'Started: ',
+                                        data.startTime
+                                    ),
+                                    React.createElement(
+                                        'li',
+                                        null,
+                                        'Ended: ',
+                                        data.endTime
+                                    ),
+                                    React.createElement(
+                                        'li',
+                                        null,
+                                        'Duration: ',
+                                        data.duration
+                                    )
                                 )
                             )
                         )
@@ -97242,7 +97251,7 @@ var QuickView = React.createClass({
 });
 module.exports = QuickView;
 
-},{"react":646,"react-bootstrap/lib/Button":416,"react-bootstrap/lib/Modal":444,"react-bootstrap/lib/OverlayTrigger":460,"react-bootstrap/lib/Popover":468,"react-bootstrap/lib/Tooltip":479,"react-dom":493}],742:[function(require,module,exports){
+},{"react":646,"react-bootstrap/lib/Button":416,"react-bootstrap/lib/Col":422,"react-bootstrap/lib/Grid":434,"react-bootstrap/lib/Image":435,"react-bootstrap/lib/Modal":444,"react-bootstrap/lib/OverlayTrigger":460,"react-bootstrap/lib/Popover":468,"react-bootstrap/lib/Row":471,"react-bootstrap/lib/Tooltip":479,"react-dom":493}],742:[function(require,module,exports){
 'use strict';
 
 var _react = require('react');
