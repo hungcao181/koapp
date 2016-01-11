@@ -6,6 +6,7 @@ module.exports = {
     ADD_ROOM: null,
     UPDATE_ROOM: null,
     DEL_ROOM: null,
+    QUICKVIEW: null
   })
 
 };

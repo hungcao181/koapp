@@ -96917,21 +96917,27 @@ var AppActions = {
             type: ActionTypes.DEL_ROOM,
             data: { id: id }
         });
+    },
+    viewRoom: function viewRoom(item) {
+        AppDispatcher.dispatch({
+            type: ActionTypes.QUICKVIEW,
+            data: item
+        });
     }
 };
 
 module.exports = AppActions;
 
-},{"../constants/AppConstants":742,"../dispatcher/AppDispatcher":743}],739:[function(require,module,exports){
+},{"../constants/AppConstants":743,"../dispatcher/AppDispatcher":744}],739:[function(require,module,exports){
 'use strict';
-"use restrict";
+'use restrict';
 
 var React = require('react');
+var ReactDOM = require('react-dom');
 
 var AppActions = require('../actions/AppActions');
-// var AppStore = require('../stores/AppStore');
-
 var RoomStore = require('../stores/RoomStore');
+var QuickView = require('./RoomQuickView');
 
 var endPoint = '/rooms';
 var Room = require('./RoomListItem.jsx');
@@ -96955,6 +96961,7 @@ var ItemList = React.createClass({
     componentDidMount: function componentDidMount() {
         // this.loadDataFromServer();
         RoomStore.addChangeListener(this._onChange);
+        RoomStore.addQuickViewListener(this._onQuickView);
     },
     componentWillUnmount: function componentWillUnmount() {
         RoomStore.removeChangeListener(this._onChange);
@@ -96964,10 +96971,17 @@ var ItemList = React.createClass({
         console.log('data on change', data);
         this.setState({ data: data });
     },
+    _onQuickView: function _onQuickView(item) {
+        var notificationNode = document.getElementById('notification-section');
+        ReactDOM.unmountComponentAtNode(notificationNode);
+        console.log('item: ', item);
+        ReactDOM.render(React.createElement(QuickView, { data: item }), document.getElementById('notification-section'));
+    },
     render: function render() {
         data = this.state.data;
+        var onQuickViewFn = this._onQuickView;
         var ItemNodes = data.map(function (item) {
-            return React.createElement(Room, { key: item.id, item: item });
+            return React.createElement(Room, { key: item.id, item: item, onQuickView: onQuickViewFn });
         });
         return React.createElement(
             'div',
@@ -96979,7 +96993,7 @@ var ItemList = React.createClass({
 
 module.exports = ItemList;
 
-},{"../actions/AppActions":738,"../stores/RoomStore":745,"./RoomListItem.jsx":740,"co":77,"co-request":76,"react":646}],740:[function(require,module,exports){
+},{"../actions/AppActions":738,"../stores/RoomStore":746,"./RoomListItem.jsx":740,"./RoomQuickView":741,"co":77,"co-request":76,"react":646,"react-dom":493}],740:[function(require,module,exports){
 'use strict';
 
 var _lib = require('react-bootstrap/lib');
@@ -97005,7 +97019,7 @@ var Room = React.createClass({
                     { className: 'row' },
                     React.createElement(
                         'a',
-                        { href: url.concat(this.props.item.id) },
+                        { href: url.concat(this.props.item._id) },
                         React.createElement(
                             'h3',
                             null,
@@ -97031,13 +97045,18 @@ var Room = React.createClass({
                         { bsStyle: 'success', title: 'actions', id: 'callId' },
                         React.createElement(
                             _lib.MenuItem,
-                            { id: this.props.item._id, onSelect: this._onDelete },
+                            { id: 'delete', onSelect: this._onDelete },
                             'Delete'
                         ),
                         React.createElement(
                             _lib.MenuItem,
-                            { id: '2', onSelect: this._onAdd },
+                            { id: 'add', onSelect: this._onAdd },
                             'Add a Room'
+                        ),
+                        React.createElement(
+                            _lib.MenuItem,
+                            { id: 'quickview', onSelect: this._onQuickView },
+                            'Quick view'
                         )
                     ),
                     React.createElement(
@@ -97058,13 +97077,172 @@ var Room = React.createClass({
         appActions.addRoom({ description: 'test' });
     },
     _onDelete: function _onDelete(evt) {
-        var id = evt.target.id;
-        appActions.delRoom(id);
+        appActions.delRoom(this.props.item._id);
+    },
+    _onQuickView: function _onQuickView(evt) {
+        this.props.onQuickView(this.props.item);
     }
 });
+
 module.exports = Room;
 
-},{"../actions/AppActions":738,"./item-block-buttons":741,"react":646,"react-bootstrap/lib":482}],741:[function(require,module,exports){
+},{"../actions/AppActions":738,"./item-block-buttons":742,"react":646,"react-bootstrap/lib":482}],741:[function(require,module,exports){
+'use strict';
+
+var React = require('react');
+var ReactDOM = require('react-dom');
+var Modal = require('react-bootstrap/lib/Modal');
+var Button = require('react-bootstrap/lib/Button');
+var Popover = require('react-bootstrap/lib/Popover');
+var Tooltip = require('react-bootstrap/lib/Tooltip');
+var OverlayTrigger = require('react-bootstrap/lib/OverlayTrigger');
+
+var QuickView = React.createClass({
+    displayName: 'QuickView',
+    getInitialState: function getInitialState() {
+        return { showModal: true };
+    },
+    close: function close() {
+        this.setState({ showModal: false });
+    },
+    open: function open() {
+        this.setState({ showModal: true });
+    },
+    render: function render() {
+        var popover = React.createElement(
+            Popover,
+            { title: 'popover' },
+            'very popover. such engagement'
+        );
+        var tooltip = React.createElement(
+            Tooltip,
+            null,
+            'wow.'
+        );
+        var data = this.props.data;
+        return React.createElement(
+            'div',
+            null,
+            React.createElement(
+                'p',
+                null,
+                'Click to get the full Modal experience!'
+            ),
+            React.createElement(
+                Button,
+                {
+                    bsStyle: 'primary',
+                    bsSize: 'large',
+                    onClick: this.open,
+                    className: 'hidden'
+                },
+                'Launch demo modal'
+            ),
+            React.createElement(
+                Modal,
+                { show: this.state.showModal, onHide: this.close },
+                React.createElement(
+                    Modal.Header,
+                    { closeButton: true },
+                    React.createElement(
+                        Modal.Title,
+                        null,
+                        'Modal heading'
+                    )
+                ),
+                React.createElement(
+                    Modal.Body,
+                    null,
+                    React.createElement(
+                        'div',
+                        { className: 'row' },
+                        React.createElement(
+                            'div',
+                            { className: 'col-md-4' },
+                            React.createElement('img', { src: data.image, alt: data.title, width: '304', height: '228' }),
+                            React.createElement(
+                                'figcaption',
+                                null,
+                                data.title
+                            )
+                        ),
+                        React.createElement(
+                            'div',
+                            { className: 'col-md-8' },
+                            React.createElement(
+                                'ul',
+                                null,
+                                React.createElement(
+                                    'li',
+                                    null,
+                                    data.description
+                                ),
+                                React.createElement(
+                                    'li',
+                                    null,
+                                    'price: ',
+                                    data.price
+                                ),
+                                React.createElement(
+                                    'li',
+                                    null,
+                                    'Minimum: ',
+                                    data.MinimumAmount
+                                ),
+                                React.createElement(
+                                    'li',
+                                    null,
+                                    'Status: ',
+                                    data.status
+                                ),
+                                React.createElement(
+                                    'li',
+                                    null,
+                                    'Started: ',
+                                    data.startTime
+                                ),
+                                React.createElement(
+                                    'li',
+                                    null,
+                                    'Ended: ',
+                                    data.endTime
+                                ),
+                                React.createElement(
+                                    'li',
+                                    null,
+                                    'Duration: ',
+                                    data.duration
+                                )
+                            )
+                        )
+                    ),
+                    React.createElement(
+                        'div',
+                        { className: 'row' },
+                        React.createElement(
+                            'div',
+                            { className: 'col-md-4' },
+                            'Comments'
+                        ),
+                        React.createElement('div', { className: 'col-md-8' })
+                    )
+                ),
+                React.createElement(
+                    Modal.Footer,
+                    null,
+                    React.createElement(
+                        Button,
+                        { onClick: this.close },
+                        'Close'
+                    )
+                )
+            )
+        );
+    }
+});
+module.exports = QuickView;
+
+},{"react":646,"react-bootstrap/lib/Button":416,"react-bootstrap/lib/Modal":444,"react-bootstrap/lib/OverlayTrigger":460,"react-bootstrap/lib/Popover":468,"react-bootstrap/lib/Tooltip":479,"react-dom":493}],742:[function(require,module,exports){
 'use strict';
 
 var _react = require('react');
@@ -97109,7 +97287,7 @@ var buttonGroupInstance = _react2.default.createElement(
 );
 module.exports = buttonGroupInstance;
 
-},{"react":646,"react-bootstrap/lib":482}],742:[function(require,module,exports){
+},{"react":646,"react-bootstrap/lib":482}],743:[function(require,module,exports){
 'use strict';
 
 var keyMirror = require('keymirror');
@@ -97119,12 +97297,13 @@ module.exports = {
   ActionTypes: keyMirror({
     ADD_ROOM: null,
     UPDATE_ROOM: null,
-    DEL_ROOM: null
+    DEL_ROOM: null,
+    QUICKVIEW: null
   })
 
 };
 
-},{"keymirror":302}],743:[function(require,module,exports){
+},{"keymirror":302}],744:[function(require,module,exports){
 'use strict';
 
 var Dispatcher = require('flux').Dispatcher;
@@ -97141,7 +97320,7 @@ var AppDispatcher = assign(new Dispatcher(), {
 
 module.exports = AppDispatcher;
 
-},{"flux":245,"object-assign":379}],744:[function(require,module,exports){
+},{"flux":245,"object-assign":379}],745:[function(require,module,exports){
 'use strict';
 
 var _regenerator = require('babel-runtime/regenerator');
@@ -97218,7 +97397,7 @@ if (use.request) {
     _reactDom2.default.render(_react2.default.createElement(ItemList, { data: roomData }), document.getElementById('rooms'));
 }
 
-},{"./components/RoomList.jsx":739,"babel-runtime/regenerator":29,"co":77,"co-request":76,"react":646,"react-dom":493,"request":657}],745:[function(require,module,exports){
+},{"./components/RoomList.jsx":739,"babel-runtime/regenerator":29,"co":77,"co-request":76,"react":646,"react-dom":493,"request":657}],746:[function(require,module,exports){
 'use strict';
 
 var _regenerator = require('babel-runtime/regenerator');
@@ -97235,6 +97414,7 @@ var assign = require('object-assign');
 var ActionTypes = require('../constants/AppConstants').ActionTypes;
 var AppDispatcher = require('../dispatcher/AppDispatcher');
 var CHANGE_EVENT = 'change';
+var QUICKVIEW_EVENT = 'quick_view';
 var endPoint = '/rooms';
 
 var _rooms = {};
@@ -97289,6 +97469,9 @@ var roomStore = assign({}, EventEmitter.prototype, {
             this.emitChange();
         }).bind(this));
     },
+    emitQuickView: function emitQuickView() {
+        this.emit(QUICKVIEW_EVENT);
+    },
     emitChange: function emitChange() {
         console.log('emitting change');
         this.emit(CHANGE_EVENT);
@@ -97299,12 +97482,19 @@ var roomStore = assign({}, EventEmitter.prototype, {
     removeChangeListener: function removeChangeListener(callback) {
         this.removeListener(CHANGE_EVENT, callback);
     },
+    addQuickViewListener: function addQuickViewListener(callback) {
+        this.on(QUICKVIEW_EVENT, callback);
+    },
+    removeQuickViewListener: function removeQuickViewListener(callback) {
+        this.removeListener(QUICKVIEW_EVENT, callback);
+    },
     getAll: function getAll() {
         return _rooms;
     }
 });
 
 roomStore.dispatchToken = AppDispatcher.register(function (action) {
+    var id = action.data && action.data.id ? action.data.id : null;
     switch (action.type) {
         case ActionTypes.ADD_ROOM:
             roomStore.storeData(action.data);
@@ -97312,17 +97502,18 @@ roomStore.dispatchToken = AppDispatcher.register(function (action) {
         case ActionTypes.UPDATE_ROOM:
             roomStore.emitChange();
         case ActionTypes.DEL_ROOM:
-            var id = action.data.id;
             if (id) {
                 roomStore.deleteData(id);
             }
+        case ActionTypes.QUICKVIEW:
+            roomStore.emitQuickView();
         default:
         //nothing
     }
 });
 module.exports = roomStore;
 
-},{"../constants/AppConstants":742,"../dispatcher/AppDispatcher":743,"babel-runtime/regenerator":29,"co":77,"co-request":76,"events":215,"object-assign":379,"request":657}]},{},[744])
+},{"../constants/AppConstants":743,"../dispatcher/AppDispatcher":744,"babel-runtime/regenerator":29,"co":77,"co-request":76,"events":215,"object-assign":379,"request":657}]},{},[745])
 
 
 //# sourceMappingURL=main.js.map

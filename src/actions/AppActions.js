@@ -26,6 +26,12 @@ let AppActions = {
             type: ActionTypes.DEL_ROOM,
             data: {id: id}
         })
+    },
+    viewRoom: function (item) {
+        AppDispatcher.dispatch({
+            type: ActionTypes.QUICKVIEW,
+            data: item
+        })
     }
 }
 

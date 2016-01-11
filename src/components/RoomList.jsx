@@ -1,10 +1,10 @@
-"use restrict";
+'use restrict';
 var React = require('react');
+var ReactDOM = require('react-dom');
 
 var AppActions = require('../actions/AppActions');
-// var AppStore = require('../stores/AppStore');
-
 var RoomStore = require('../stores/RoomStore');
+var QuickView = require('./RoomQuickView');
 
 var endPoint = '/rooms';
 var Room = require('./RoomListItem.jsx');
@@ -26,6 +26,7 @@ var ItemList = React.createClass({
     componentDidMount: function () {
         // this.loadDataFromServer();
         RoomStore.addChangeListener(this._onChange);
+        RoomStore.addQuickViewListener(this._onQuickView);
     },
     componentWillUnmount: function () {
         RoomStore.removeChangeListener(this._onChange);
@@ -35,11 +36,18 @@ var ItemList = React.createClass({
         console.log('data on change', data);
         this.setState({data: data});
     },
+    _onQuickView: function (item) {
+        let notificationNode = document.getElementById('notification-section');
+        ReactDOM.unmountComponentAtNode(notificationNode);
+        console.log('item: ', item);
+        ReactDOM.render(<QuickView data={item}/>, document.getElementById('notification-section'));        
+    },
     render: function () {
         data = this.state.data;
+        let onQuickViewFn = this._onQuickView;
         var ItemNodes = data.map(function(item) {    
             return (
-                <Room  key={item.id} item={item}>
+                <Room  key={item.id} item={item} onQuickView={onQuickViewFn}>
                 </Room>
             )
         });
@@ -50,5 +58,7 @@ var ItemList = React.createClass({
         );        
     }
 });
+
+
 
 module.exports = ItemList;

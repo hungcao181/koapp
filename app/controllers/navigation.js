@@ -4,7 +4,7 @@ let marko       = require('marko');
 let homeTpl     = require('../views/home.marko');
 let aboutTpl    = require('../views/about.marko');
 let profileTpl  = require('../views/profile.marko');
-let roomTpl     = require('../views/rooms.marko');
+let roomsTpl     = require('../views/rooms.marko');
 let monkdb      = require('../models/config').monkdb;
 let wrap        = require('co-monk');
 let co          = require('co');
@@ -38,6 +38,6 @@ module.exports = {
         if (data.length == 0) {
             yield initRooms();
         }
-        roomTpl.render(data, this.res);
+        roomsTpl.render(data, this.res);
     }
 } 

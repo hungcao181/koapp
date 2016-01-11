@@ -3,9 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <title><layout-placeholder name="title"/></title>
-    <link href="vendors/bootstrap/css/bootstrap.min.css" rel="stylesheet">
-    <link href="vendors/bootstrap/css/bootstrap-theme.min.css" rel="stylesheet">
-    <link href="css/main.css" rel="stylesheet">
+    <link href="/vendors/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <link href="/vendors/bootstrap/css/bootstrap-theme.min.css" rel="stylesheet">
+    <link href="/css/main.css" rel="stylesheet">
 </head>
 <body>
     <nav class="navbar navbar-default">
@@ -54,6 +54,8 @@
     <h1 if="data.showHeader !== false">
         <layout-placeholder name="title"/>
     </h1>
+    <div id='notification-section'>
+    </div>
     <p>
         <layout-placeholder name="body"/>
     </p>
@@ -77,8 +79,8 @@
             </nav>       
         </layout-placeholder>
     </div>
-    <script src="vendors/jquery.min.js"></script>
-    <script src="vendors/bootstrap/js/bootstrap.min.js"></script>
+    <script src="/vendors/jquery.min.js"></script>
+    <script src="/vendors/bootstrap/js/bootstrap.min.js"></script>
     <layout-placeholder name="script">
     </layout-placeholder>    
 </body>

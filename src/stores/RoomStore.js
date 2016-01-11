@@ -7,6 +7,7 @@ let assign = require('object-assign');
 let ActionTypes = require('../constants/AppConstants').ActionTypes;
 let AppDispatcher = require('../dispatcher/AppDispatcher');
 let CHANGE_EVENT = 'change';
+let QUICKVIEW_EVENT = 'quick_view'; 
 let endPoint = '/rooms';
 
 let _rooms = {};
@@ -44,6 +45,9 @@ let roomStore = assign({}, EventEmitter.prototype, {
             this.emitChange();
         }.bind(this))
     },
+    emitQuickView: function () {
+        this.emit(QUICKVIEW_EVENT);
+    },
     emitChange: function () {
         console.log('emitting change');
         this.emit(CHANGE_EVENT);
@@ -54,12 +58,19 @@ let roomStore = assign({}, EventEmitter.prototype, {
     removeChangeListener: function (callback) {
         this.removeListener(CHANGE_EVENT, callback);
     },
+    addQuickViewListener: function (callback) {
+        this.on(QUICKVIEW_EVENT, callback);
+    },
+    removeQuickViewListener: function (callback) {
+        this.removeListener(QUICKVIEW_EVENT, callback);
+    }, 
     getAll: function () {
         return _rooms;
     }
 });
 
 roomStore.dispatchToken = AppDispatcher.register(function (action) {
+    let id = (action.data && action.data.id) ? action.data.id : null;
     switch (action.type) {
         case ActionTypes.ADD_ROOM:
             roomStore.storeData(action.data);
@@ -67,10 +78,11 @@ roomStore.dispatchToken = AppDispatcher.register(function (action) {
         case ActionTypes.UPDATE_ROOM:
             roomStore.emitChange();
         case ActionTypes.DEL_ROOM:
-            let id = action.data.id;
             if (id) {
                 roomStore.deleteData(id);
             }
+        case ActionTypes.QUICKVIEW:
+            roomStore.emitQuickView();
         default:
         //nothing
     }

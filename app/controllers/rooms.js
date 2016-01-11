@@ -6,10 +6,9 @@ let fs          = require('fs');
 
 let rooms = wrap(monkdb.get('rooms'));
 let initRooms = require('./initData.js').initRooms;
-
+let roomTpl = require('../views/room.marko');
 function getaRoom() {
     return {
-    id: Date.now(),
     title: 'Fresh fruits package',
     description: 'sound surrounding 4D',
     image: 'images/vip01.jpg',
@@ -39,7 +38,10 @@ module.exports = {
         this.body = data.rooms;
     },
     show: function *(next) {
-        this.body = {};
+        let id = this.params.id;
+        let data = yield rooms.findById(id);
+        roomTpl.render(data, this.res);
+        // this.body = data;
     },
     edit: function *(next) {
         this.body = {}

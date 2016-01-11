@@ -13,7 +13,7 @@ var Room = React.createClass({
             <div className = "item room">
                 <div>
                     <div className='row'> 
-                        <a href={url.concat(this.props.item.id)}><h3>{this.props.item.title}</h3></a>
+                        <a href={url.concat(this.props.item._id)}><h3>{this.props.item.title}</h3></a>
                         <img src={this.props.item.image} alt="The Pulpit Rock" width="304" height="228"></img>
                         <figcaption>Fig1. - A view of the pulpit rock in Norway.</figcaption>
                     </div>
@@ -21,8 +21,9 @@ var Room = React.createClass({
                 <div className='row'>
                     <ButtonGroup>
                         <DropdownButton bsStyle="success" title="actions" id="callId">
-                        <MenuItem id={this.props.item._id} onSelect={this._onDelete}>Delete</MenuItem>
-                        <MenuItem id="2" onSelect={this._onAdd}>Add a Room</MenuItem>
+                            <MenuItem id='delete' onSelect={this._onDelete}>Delete</MenuItem>
+                            <MenuItem id='add' onSelect={this._onAdd}>Add a Room</MenuItem>
+                            <MenuItem id='quickview' onSelect={this._onQuickView}>Quick view</MenuItem>
                         </DropdownButton>
                         <Button bsStyle="info">Middle</Button>
                         <Button bsStyle="info">Right</Button>
@@ -35,8 +36,11 @@ var Room = React.createClass({
         appActions.addRoom({description: 'test'});
     },
     _onDelete: function (evt) {
-        let id = evt.target.id;
-        appActions.delRoom(id);
+        appActions.delRoom(this.props.item._id);
+    },
+    _onQuickView: function (evt) {
+        this.props.onQuickView(this.props.item);
     }
 });
+
 module.exports = Room;

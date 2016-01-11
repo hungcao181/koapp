@@ -1,0 +1,41 @@
+<layout-use template="./default-layout.marko" show-header="$true">
+    <layout-put into="title">${data.title}</layout-put>
+    <layout-put into="body">
+        <div className='row'>
+            <div class='col-md-4'>
+                <img src=${data.image} alt=${data.title} width="304" height="228"></img>
+                <figcaption>${data.title}</figcaption>
+            </div>
+            <div class='col-md-8'>
+                <ul>
+                    <li>${data.description}</li>
+                    <li>price: ${data.price}</li>
+                    <li>Minimum: ${data.MinimumAmount}</li>
+                    <li>Status: ${data.status}</li>
+                    <li>Started: ${data.startTime}</li>
+                    <li>Ended: ${data.endTime}</li>
+                    <li>Duration: ${data.duration}</li>
+                </ul>
+            </div>            
+        </div>
+        <div className='row'>
+            <div class='col-md-4'>
+            Comments
+            </div>
+            <div class='col-md-8'>
+            </div>            
+        </div>        
+        <ul if="notEmpty(data.colors)">
+            <li class="color" for="color in data.colors">
+                ${color}
+            </li>
+        </ul>
+        <div else>
+            No colors!
+        </div>
+
+    </layout-put>
+    <layout-put into="script">
+        
+    </layout-put>
+</layout-use>
