@@ -25,8 +25,6 @@ var QuickView = React.createClass({
     },
 
     render() {
-        let popover = <Popover title="popover">very popover. such engagement</Popover>;
-        let tooltip = <Tooltip>wow.</Tooltip>;
         let data = this.props.data;
         return (
             <div>

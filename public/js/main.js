@@ -96974,7 +96974,6 @@ var ItemList = React.createClass({
     _onQuickView: function _onQuickView(item) {
         var notificationNode = document.getElementById('notification-section');
         ReactDOM.unmountComponentAtNode(notificationNode);
-        console.log('item: ', item);
         ReactDOM.render(React.createElement(QuickView, { data: item }), document.getElementById('notification-section'));
     },
     render: function render() {
@@ -97114,16 +97113,6 @@ var QuickView = React.createClass({
         this.setState({ showModal: true });
     },
     render: function render() {
-        var popover = React.createElement(
-            Popover,
-            { title: 'popover' },
-            'very popover. such engagement'
-        );
-        var tooltip = React.createElement(
-            Tooltip,
-            null,
-            'wow.'
-        );
         var data = this.props.data;
         return React.createElement(
             'div',

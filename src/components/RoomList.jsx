@@ -39,7 +39,6 @@ var ItemList = React.createClass({
     _onQuickView: function (item) {
         let notificationNode = document.getElementById('notification-section');
         ReactDOM.unmountComponentAtNode(notificationNode);
-        console.log('item: ', item);
         ReactDOM.render(<QuickView data={item}/>, document.getElementById('notification-section'));        
     },
     render: function () {
