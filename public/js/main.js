@@ -97224,16 +97224,6 @@ var QuickView = React.createClass({
                                 )
                             )
                         )
-                    ),
-                    React.createElement(
-                        'div',
-                        { className: 'row' },
-                        React.createElement(
-                            'div',
-                            { className: 'col-md-4' },
-                            'Comments'
-                        ),
-                        React.createElement('div', { className: 'col-md-8' })
                     )
                 ),
                 React.createElement(

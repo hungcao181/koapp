@@ -65,14 +65,6 @@ var QuickView = React.createClass({
                         </Col>            
                     </Row>
                     </Grid>
-                    <div className='row'>
-                        <div className='col-md-4'>
-                        Comments
-                        </div>
-                        <div className='col-md-8'>
-                        </div>            
-                    </div>        
-
                 </Modal.Body>
                 <Modal.Footer>
                 <Button onClick={this.close}>Close</Button>
