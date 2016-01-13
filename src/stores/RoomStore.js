@@ -7,7 +7,7 @@ let assign = require('object-assign');
 let ActionTypes = require('../constants/AppConstants').ActionTypes;
 let AppDispatcher = require('../dispatcher/AppDispatcher');
 let CHANGE_EVENT = 'change';
-let QUICKVIEW_EVENT = 'quick_view'; 
+let OK200_EVENT = 'quick_view'; 
 let endPoint = '/rooms';
 
 let _rooms = {};
@@ -27,17 +27,34 @@ let roomStore = assign({}, EventEmitter.prototype, {
                 console.log('err: ', err);
         });    
     },
-    storeData: function () {
-        request.post({
-            url: options.url,
-            form: {
-                description: 'test'
-            }
-        }, function (err, res, body) {
-            _rooms = JSON.parse(body);
-            console.log('loading data from server:', _rooms);
-            this.emitChange();
-        }.bind(this))
+    storeData: function (data) {
+        co(function *() {
+            let response = yield coRequest({
+                url: options.url,
+                formData: data,
+                method: 'post'
+            });
+            _rooms = JSON.parse(response.body);
+            this.emitOK200();
+        }.bind(this)).catch(function (err) {
+                console.log('err: ', err);
+        });    
+
+        // if (data.title) {
+        //     console.log('storing data to ', options.url);
+        //     request.post({
+        //         url: options.url,
+        //         formData: data
+        //     }, function (err, res, body) {
+        //         if (err) {
+        //             console.log('err ', err);
+        //         } else {
+        //             _rooms = JSON.parse(body);
+        //             console.log('updating change from server:', _rooms);
+        //             this.emitOK200();
+        //         }
+        //     }.bind(this))
+        // }
     },
     deleteData: function (id) {
         request.del(options.url.concat('/', id), function (err, res, body) {
@@ -45,8 +62,8 @@ let roomStore = assign({}, EventEmitter.prototype, {
             this.emitChange();
         }.bind(this))
     },
-    emitQuickView: function () {
-        this.emit(QUICKVIEW_EVENT);
+    emitOK200: function () {
+        this.emit(OK200_EVENT);
     },
     emitChange: function () {
         console.log('emitting change');
@@ -58,11 +75,11 @@ let roomStore = assign({}, EventEmitter.prototype, {
     removeChangeListener: function (callback) {
         this.removeListener(CHANGE_EVENT, callback);
     },
-    addQuickViewListener: function (callback) {
-        this.on(QUICKVIEW_EVENT, callback);
+    addOK200Listener: function (callback) {
+        this.on(OK200_EVENT, callback);
     },
-    removeQuickViewListener: function (callback) {
-        this.removeListener(QUICKVIEW_EVENT, callback);
+    removeOK200Listener: function (callback) {
+        this.removeListener(OK200_EVENT, callback);
     }, 
     getAll: function () {
         return _rooms;
@@ -81,8 +98,8 @@ roomStore.dispatchToken = AppDispatcher.register(function (action) {
             if (id) {
                 roomStore.deleteData(id);
             }
-        case ActionTypes.QUICKVIEW:
-            roomStore.emitQuickView();
+        case ActionTypes.OK200:
+            roomStore.emitOK200();
         default:
         //nothing
     }

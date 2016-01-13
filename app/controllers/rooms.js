@@ -2,7 +2,11 @@
 let monkdb      = require('../models/config').monkdb;
 let wrap        = require('co-monk');
 let parse       = require('co-body');
+let mediaParse  = require('co-busboy');
 let fs          = require('fs');
+let path        = require('path');
+
+let appRoot     = require('app-root-path');
 
 let rooms = wrap(monkdb.get('rooms'));
 let initRooms = require('./initData.js').initRooms;
@@ -32,10 +36,51 @@ module.exports = {
     },
     add: function *(next) {
         let body = yield parse.form(this);
-        let room = getaRoom();
+        let room = {'title': body.title};
+        room.description = body.description;
+        room.image = body.image;
+        room.MinimumAmount = body.MinimumAmount;
+        room.price = body.price;
+
         yield rooms.insert(room);
         let data = {rooms: yield rooms.find({})};
         this.body = data.rooms;
+    },
+    addwithMedia: function *(next) {
+        var parts = mediaParse(this, {
+            autoFields: true
+        });
+        var part;
+        var file, relFile;
+        var files = {};
+        let room;
+        while (part = yield parts) {
+            // it's a stream
+            console.log('part:', part);
+            // file = appRoot + '/public/images/' + part.filename;
+            file = appRoot + '/public/images/' + part.filename;
+            relFile = '/images/' + part.filename;
+            files[part.fieldname] = relFile;
+            console.log('file ', file);
+            part.pipe(fs.createWriteStream(file));
+        }
+        console.log('and we are done parsing the form!');
+        // .field holds all the fields in key/value form
+        // console.log(parts.field._csrf)
+        // .fields holds all the fields in [key, value] form
+        // console.log(parts.fields[0])
+        room = {'title': parts.fields['title']};
+        room.description = parts.fields['description'];
+        room.MinimumAmount = parts.fields['MinimumAmount'];
+        room.price = parts.fields['price'];
+        room['image'] = relFile;
+        // files.forEach(function (file) {
+        //     console.log('file');
+        // });
+        yield rooms.insert(room);
+        let data = {rooms: yield rooms.find({})};
+        this.body = data.rooms;
+                
     },
     show: function *(next) {
         let id = this.params.id;

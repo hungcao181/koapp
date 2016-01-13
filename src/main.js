@@ -1,3 +1,4 @@
+'use restrict';
 import React from 'react';
 import ReactDOM from 'react-dom';
 // import {ItemList} from './components/RoomListItem.jsx';

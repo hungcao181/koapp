@@ -46,11 +46,11 @@ var QuickView = React.createClass({
                 <Modal.Body>
                 <Grid>
                     <Row>
-                        <Col xs={4} md={4}>
+                        <Col xs={0} md={0}>
                             <Image src={data.image} alt={data.title} ></Image>
                             <figcaption>{data.title}</figcaption>
                         </Col>
-                        <Col xs={8} md={8}>
+                        <Col xs={12} md={12}>
                             <ul>
                                 <li>{data.description}</li>
                                 <li>price: {data.price}</li>

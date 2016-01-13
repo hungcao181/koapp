@@ -96906,7 +96906,7 @@ var AppActions = {
             type: ActionTypes.UPDATE_ROOM
         });
     },
-    addRoom: function addRoom(room) {
+    addData: function addData(room) {
         AppDispatcher.dispatch({
             type: ActionTypes.ADD_ROOM,
             data: room
@@ -96923,21 +96923,36 @@ var AppActions = {
             type: ActionTypes.QUICKVIEW,
             data: item
         });
+    },
+    OK200: function OK200(response) {
+        AppDispatcher.dispatch({
+            type: ActionTypes.OK200,
+            data: response
+        });
     }
 };
 
 module.exports = AppActions;
 
-},{"../constants/AppConstants":743,"../dispatcher/AppDispatcher":744}],739:[function(require,module,exports){
+},{"../constants/AppConstants":744,"../dispatcher/AppDispatcher":745}],739:[function(require,module,exports){
 'use strict';
 'use restrict';
 
 var React = require('react');
 var ReactDOM = require('react-dom');
+var Image = require('react-bootstrap/lib/Image');
+var Grid = require('react-bootstrap/lib/Grid');
+var Row = require('react-bootstrap/lib/Row');
+var Col = require('react-bootstrap/lib/Col');
+var Input = require('react-bootstrap/lib/Input');
+var ButtonInput = require('react-bootstrap/lib/ButtonInput');
+var Button = require('react-bootstrap/lib/Button');
+var ButtonGroup = require('react-bootstrap/lib/ButtonGroup');
 
 var AppActions = require('../actions/AppActions');
 var RoomStore = require('../stores/RoomStore');
 var QuickView = require('./RoomQuickView');
+var QuickAdd = require('./RoomQuickAdd');
 
 var endPoint = '/rooms';
 var Room = require('./RoomListItem.jsx');
@@ -96959,9 +96974,7 @@ var ItemList = React.createClass({
         return { data: [] };
     },
     componentDidMount: function componentDidMount() {
-        // this.loadDataFromServer();
         RoomStore.addChangeListener(this._onChange);
-        RoomStore.addQuickViewListener(this._onQuickView);
     },
     componentWillUnmount: function componentWillUnmount() {
         RoomStore.removeChangeListener(this._onChange);
@@ -96972,19 +96985,46 @@ var ItemList = React.createClass({
         this.setState({ data: data });
     },
     _onQuickView: function _onQuickView(item) {
-        var notificationNode = document.getElementById('notification-section');
-        ReactDOM.unmountComponentAtNode(notificationNode);
-        ReactDOM.render(React.createElement(QuickView, { data: item }), document.getElementById('notification-section'));
+        var actionsNode = document.getElementById('actions-section');
+        ReactDOM.unmountComponentAtNode(actionsNode);
+        ReactDOM.render(React.createElement(QuickView, { data: item }), document.getElementById('actions-section'));
+    },
+    _onAdd: function _onAdd() {
+        var actionsNode = document.getElementById('actions-section');
+        ReactDOM.unmountComponentAtNode(actionsNode);
+        ReactDOM.render(React.createElement(QuickAdd, null), document.getElementById('actions-section'));
+        RoomStore.addOK200Listener(this._onOK200);
+    },
+    _onOK200: function _onOK200() {
+        var actionsNode = document.getElementById('actions-section');
+        ReactDOM.unmountComponentAtNode(actionsNode);
+        RoomStore.removeOK200Listener(this._onOK200);
+        console.log('OK200');
     },
     render: function render() {
         data = this.state.data;
         var onQuickViewFn = this._onQuickView;
         var ItemNodes = data.map(function (item) {
-            return React.createElement(Room, { key: item.id, item: item, onQuickView: onQuickViewFn });
+            return React.createElement(Room, { key: item._id, item: item, onQuickView: onQuickViewFn });
         });
+
         return React.createElement(
             'div',
             { className: 'items rooms' },
+            React.createElement(
+                ButtonGroup,
+                null,
+                React.createElement(
+                    ButtonInput,
+                    { onClick: this._onAdd },
+                    'Add'
+                ),
+                React.createElement(
+                    ButtonInput,
+                    null,
+                    'Remove Selected'
+                )
+            ),
             ItemNodes
         );
     }
@@ -96992,7 +97032,7 @@ var ItemList = React.createClass({
 
 module.exports = ItemList;
 
-},{"../actions/AppActions":738,"../stores/RoomStore":746,"./RoomListItem.jsx":740,"./RoomQuickView":741,"co":77,"co-request":76,"react":646,"react-dom":493}],740:[function(require,module,exports){
+},{"../actions/AppActions":738,"../stores/RoomStore":747,"./RoomListItem.jsx":740,"./RoomQuickAdd":741,"./RoomQuickView":742,"co":77,"co-request":76,"react":646,"react-bootstrap/lib/Button":416,"react-bootstrap/lib/ButtonGroup":417,"react-bootstrap/lib/ButtonInput":418,"react-bootstrap/lib/Col":422,"react-bootstrap/lib/Grid":434,"react-bootstrap/lib/Image":435,"react-bootstrap/lib/Input":436,"react-bootstrap/lib/Row":471,"react-dom":493}],740:[function(require,module,exports){
 'use strict';
 
 var _lib = require('react-bootstrap/lib');
@@ -97085,7 +97125,118 @@ var Room = React.createClass({
 
 module.exports = Room;
 
-},{"../actions/AppActions":738,"./item-block-buttons":742,"react":646,"react-bootstrap/lib":482}],741:[function(require,module,exports){
+},{"../actions/AppActions":738,"./item-block-buttons":743,"react":646,"react-bootstrap/lib":482}],741:[function(require,module,exports){
+'use strict';
+
+var fs = require('fs');
+var React = require('react');
+var ReactDOM = require('react-dom');
+var Modal = require('react-bootstrap/lib/Modal');
+var Popover = require('react-bootstrap/lib/Popover');
+var Tooltip = require('react-bootstrap/lib/Tooltip');
+var Image = require('react-bootstrap/lib/Image');
+// let Grid = require('react-bootstrap/lib/Grid');
+// let Row = require('react-bootstrap/lib/Row');
+// let Col = require('react-bootstrap/lib/Col');
+var Input = require('react-bootstrap/lib/Input');
+var ButtonInput = require('react-bootstrap/lib/ButtonInput');
+var Button = require('react-bootstrap/lib/Button');
+
+var OverlayTrigger = require('react-bootstrap/lib/OverlayTrigger');
+
+var AppActions = require('../actions/AppActions');
+
+var QuickAdd = React.createClass({
+    displayName: 'QuickAdd',
+    getInitialState: function getInitialState() {
+        return { showModal: true, data: {} };
+    },
+    close: function close() {
+        this.setState({ showModal: false });
+    },
+    open: function open() {
+        this.setState({ showModal: true });
+    },
+    _onSubmit: function _onSubmit(evt) {
+        evt.preventDefault();
+        AppActions.addData(this.state.data);
+        this.setState({ showModal: false });
+    },
+    _onInputsChange: function _onInputsChange(evt) {
+        evt.preventDefault();
+        var f = evt.target;
+        var data = this.state.data;
+        if (f.getAttribute('name') == 'file') {
+            data[f.getAttribute('name')] = fs.createReadStream(f.value);
+        } else {
+            data[f.getAttribute('name')] = f.value;
+        }
+        this.setState({ data: data });
+    },
+    render: function render() {
+        var data = this.props.data;
+        return React.createElement(
+            'div',
+            null,
+            React.createElement(
+                'p',
+                null,
+                'Click to get the full Modal experience!'
+            ),
+            React.createElement(
+                Modal,
+                { show: this.state.showModal, onHide: this.close },
+                React.createElement(
+                    Modal.Header,
+                    { closeButton: true },
+                    React.createElement(
+                        Modal.Title,
+                        null,
+                        'Modal heading'
+                    )
+                ),
+                React.createElement(
+                    Modal.Body,
+                    null,
+                    React.createElement(
+                        'form',
+                        { id: 'RoomQuickAdd', encType: 'multipart/form-data', action: '/rooms', method: 'post' },
+                        React.createElement('input', { type: 'text', name: 'title', label: 'Title', placeholder: 'Enter title', onChange: this._onInputsChange }),
+                        React.createElement('br', null),
+                        'file: ',
+                        React.createElement('input', { type: 'file', name: 'image', label: 'File', help: '[Optional] Block level help text', onChange: this._onInputsChange }),
+                        React.createElement('br', null),
+                        React.createElement('input', { type: 'textarea', name: 'description', label: 'Description', placeholder: 'Enter description', onChange: this._onInputsChange }),
+                        React.createElement('br', null),
+                        React.createElement('input', { type: 'text', name: 'price', label: 'Price', placeholder: 'Enter price', onChange: this._onInputsChange }),
+                        React.createElement('br', null),
+                        React.createElement('input', { type: 'text', name: 'MinimumAmount', label: 'MinimumAmount', placeholder: 'Enter MinimumAmount', onChange: this._onInputsChange }),
+                        React.createElement('br', null),
+                        React.createElement('input', { type: 'submit', value: 'Submit' })
+                    )
+                ),
+                React.createElement(
+                    Modal.Footer,
+                    null,
+                    React.createElement(
+                        Button,
+                        { onClick: this.save },
+                        'Save'
+                    ),
+                    React.createElement(
+                        Button,
+                        { onClick: this.close },
+                        'Close'
+                    )
+                )
+            )
+        );
+    }
+});
+
+module.exports = QuickAdd;
+
+},{"../actions/AppActions":738,"fs":61,"react":646,"react-bootstrap/lib/Button":416,"react-bootstrap/lib/ButtonInput":418,"react-bootstrap/lib/Image":435,"react-bootstrap/lib/Input":436,"react-bootstrap/lib/Modal":444,"react-bootstrap/lib/OverlayTrigger":460,"react-bootstrap/lib/Popover":468,"react-bootstrap/lib/Tooltip":479,"react-dom":493}],742:[function(require,module,exports){
 'use strict';
 
 var React = require('react');
@@ -97155,7 +97306,7 @@ var QuickView = React.createClass({
                             null,
                             React.createElement(
                                 Col,
-                                { xs: 4, md: 4 },
+                                { xs: 0, md: 0 },
                                 React.createElement(Image, { src: data.image, alt: data.title }),
                                 React.createElement(
                                     'figcaption',
@@ -97165,7 +97316,7 @@ var QuickView = React.createClass({
                             ),
                             React.createElement(
                                 Col,
-                                { xs: 8, md: 8 },
+                                { xs: 12, md: 12 },
                                 React.createElement(
                                     'ul',
                                     null,
@@ -97230,7 +97381,7 @@ var QuickView = React.createClass({
 });
 module.exports = QuickView;
 
-},{"react":646,"react-bootstrap/lib/Button":416,"react-bootstrap/lib/Col":422,"react-bootstrap/lib/Grid":434,"react-bootstrap/lib/Image":435,"react-bootstrap/lib/Modal":444,"react-bootstrap/lib/OverlayTrigger":460,"react-bootstrap/lib/Popover":468,"react-bootstrap/lib/Row":471,"react-bootstrap/lib/Tooltip":479,"react-dom":493}],742:[function(require,module,exports){
+},{"react":646,"react-bootstrap/lib/Button":416,"react-bootstrap/lib/Col":422,"react-bootstrap/lib/Grid":434,"react-bootstrap/lib/Image":435,"react-bootstrap/lib/Modal":444,"react-bootstrap/lib/OverlayTrigger":460,"react-bootstrap/lib/Popover":468,"react-bootstrap/lib/Row":471,"react-bootstrap/lib/Tooltip":479,"react-dom":493}],743:[function(require,module,exports){
 'use strict';
 
 var _react = require('react');
@@ -97275,7 +97426,7 @@ var buttonGroupInstance = _react2.default.createElement(
 );
 module.exports = buttonGroupInstance;
 
-},{"react":646,"react-bootstrap/lib":482}],743:[function(require,module,exports){
+},{"react":646,"react-bootstrap/lib":482}],744:[function(require,module,exports){
 'use strict';
 
 var keyMirror = require('keymirror');
@@ -97286,12 +97437,12 @@ module.exports = {
     ADD_ROOM: null,
     UPDATE_ROOM: null,
     DEL_ROOM: null,
-    QUICKVIEW: null
+    OK200: null
   })
 
 };
 
-},{"keymirror":302}],744:[function(require,module,exports){
+},{"keymirror":302}],745:[function(require,module,exports){
 'use strict';
 
 var Dispatcher = require('flux').Dispatcher;
@@ -97308,8 +97459,9 @@ var AppDispatcher = assign(new Dispatcher(), {
 
 module.exports = AppDispatcher;
 
-},{"flux":245,"object-assign":379}],745:[function(require,module,exports){
+},{"flux":245,"object-assign":379}],746:[function(require,module,exports){
 'use strict';
+'use restrict';
 
 var _regenerator = require('babel-runtime/regenerator');
 
@@ -97385,7 +97537,7 @@ if (use.request) {
     _reactDom2.default.render(_react2.default.createElement(ItemList, { data: roomData }), document.getElementById('rooms'));
 }
 
-},{"./components/RoomList.jsx":739,"babel-runtime/regenerator":29,"co":77,"co-request":76,"react":646,"react-dom":493,"request":657}],746:[function(require,module,exports){
+},{"./components/RoomList.jsx":739,"babel-runtime/regenerator":29,"co":77,"co-request":76,"react":646,"react-dom":493,"request":657}],747:[function(require,module,exports){
 'use strict';
 
 var _regenerator = require('babel-runtime/regenerator');
@@ -97402,7 +97554,7 @@ var assign = require('object-assign');
 var ActionTypes = require('../constants/AppConstants').ActionTypes;
 var AppDispatcher = require('../dispatcher/AppDispatcher');
 var CHANGE_EVENT = 'change';
-var QUICKVIEW_EVENT = 'quick_view';
+var OK200_EVENT = 'quick_view';
 var endPoint = '/rooms';
 
 var _rooms = {};
@@ -97439,17 +97591,51 @@ var roomStore = assign({}, EventEmitter.prototype, {
             console.log('err: ', err);
         });
     },
-    storeData: function storeData() {
-        request.post({
-            url: options.url,
-            form: {
-                description: 'test'
-            }
-        }, (function (err, res, body) {
-            _rooms = JSON.parse(body);
-            console.log('loading data from server:', _rooms);
-            this.emitChange();
-        }).bind(this));
+    storeData: function storeData(data) {
+        co(_regenerator2.default.mark(function _callee2() {
+            var response;
+            return _regenerator2.default.wrap(function _callee2$(_context2) {
+                while (1) {
+                    switch (_context2.prev = _context2.next) {
+                        case 0:
+                            _context2.next = 2;
+                            return coRequest({
+                                url: options.url,
+                                formData: data,
+                                method: 'post'
+                            });
+
+                        case 2:
+                            response = _context2.sent;
+
+                            _rooms = JSON.parse(response.body);
+                            this.emitOK200();
+
+                        case 5:
+                        case 'end':
+                            return _context2.stop();
+                    }
+                }
+            }, _callee2, this);
+        }).bind(this)).catch(function (err) {
+            console.log('err: ', err);
+        });
+
+        // if (data.title) {
+        //     console.log('storing data to ', options.url);
+        //     request.post({
+        //         url: options.url,
+        //         formData: data
+        //     }, function (err, res, body) {
+        //         if (err) {
+        //             console.log('err ', err);
+        //         } else {
+        //             _rooms = JSON.parse(body);
+        //             console.log('updating change from server:', _rooms);
+        //             this.emitOK200();
+        //         }
+        //     }.bind(this))
+        // }
     },
     deleteData: function deleteData(id) {
         request.del(options.url.concat('/', id), (function (err, res, body) {
@@ -97457,8 +97643,8 @@ var roomStore = assign({}, EventEmitter.prototype, {
             this.emitChange();
         }).bind(this));
     },
-    emitQuickView: function emitQuickView() {
-        this.emit(QUICKVIEW_EVENT);
+    emitOK200: function emitOK200() {
+        this.emit(OK200_EVENT);
     },
     emitChange: function emitChange() {
         console.log('emitting change');
@@ -97470,11 +97656,11 @@ var roomStore = assign({}, EventEmitter.prototype, {
     removeChangeListener: function removeChangeListener(callback) {
         this.removeListener(CHANGE_EVENT, callback);
     },
-    addQuickViewListener: function addQuickViewListener(callback) {
-        this.on(QUICKVIEW_EVENT, callback);
+    addOK200Listener: function addOK200Listener(callback) {
+        this.on(OK200_EVENT, callback);
     },
-    removeQuickViewListener: function removeQuickViewListener(callback) {
-        this.removeListener(QUICKVIEW_EVENT, callback);
+    removeOK200Listener: function removeOK200Listener(callback) {
+        this.removeListener(OK200_EVENT, callback);
     },
     getAll: function getAll() {
         return _rooms;
@@ -97493,15 +97679,15 @@ roomStore.dispatchToken = AppDispatcher.register(function (action) {
             if (id) {
                 roomStore.deleteData(id);
             }
-        case ActionTypes.QUICKVIEW:
-            roomStore.emitQuickView();
+        case ActionTypes.OK200:
+            roomStore.emitOK200();
         default:
         //nothing
     }
 });
 module.exports = roomStore;
 
-},{"../constants/AppConstants":743,"../dispatcher/AppDispatcher":744,"babel-runtime/regenerator":29,"co":77,"co-request":76,"events":215,"object-assign":379,"request":657}]},{},[745])
+},{"../constants/AppConstants":744,"../dispatcher/AppDispatcher":745,"babel-runtime/regenerator":29,"co":77,"co-request":76,"events":215,"object-assign":379,"request":657}]},{},[746])
 
 
 //# sourceMappingURL=main.js.map

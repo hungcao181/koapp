@@ -18,7 +18,12 @@ router.del('/comments/:id', comments.delete);
 //rooms
 var rooms = require('../controllers/rooms.js');
 router.get('/rooms', rooms.list);
-router.post('/rooms', rooms.add);
+router.post('/rooms', rooms.addwithMedia);
 router.get('/rooms/:id', rooms.show);
 router.delete('/rooms/:id', rooms.delete);
+
+//upload files
+var media = require('../controllers/media.js');
+router.post('/uploads', media.uploadImage);
+
 module.exports = router;

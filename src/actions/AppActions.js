@@ -15,7 +15,7 @@ let AppActions = {
             type: ActionTypes.UPDATE_ROOM
         })
     },
-    addRoom: function (room) {
+    addData: function (room) {
         AppDispatcher.dispatch({
             type: ActionTypes.ADD_ROOM,
             data: room
@@ -31,6 +31,12 @@ let AppActions = {
         AppDispatcher.dispatch({
             type: ActionTypes.QUICKVIEW,
             data: item
+        })
+    },
+    OK200: function (response) {
+        AppDispatcher.dispatch({
+            type: ActionTypes.OK200,
+            data: response
         })
     }
 }

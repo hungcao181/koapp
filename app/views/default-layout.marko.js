@@ -29,7 +29,7 @@ function create(__helpers) {
       out.w('</h1>');
     }
 
-    out.w('<div id="notification-section"></div><p>');
+    out.w('<div id="actions-section"></div><p>');
     __tag(out,
       ______node_modules_marko_layout_placeholder_tag_js,
       {
