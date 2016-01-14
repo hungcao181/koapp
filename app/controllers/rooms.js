@@ -11,19 +11,7 @@ let appRoot     = require('app-root-path');
 let rooms = wrap(monkdb.get('rooms'));
 let initRooms = require('./initData.js').initRooms;
 let roomTpl = require('../views/room.marko');
-function getaRoom() {
-    return {
-    title: 'Fresh fruits package',
-    description: 'sound surrounding 4D',
-    image: 'images/vip01.jpg',
-    MinimumAmount: 20,
-    price: 50,
-    status: 'using',
-    startTime: '',
-    endTime: '',
-    duration: 0 
-    }
-}
+let roomListTpl = require('../views/rooms.marko');
 module.exports = {
     list: function *(next) {
         let data = {};
@@ -79,7 +67,9 @@ module.exports = {
         // });
         yield rooms.insert(room);
         let data = {rooms: yield rooms.find({})};
-        this.body = data.rooms;
+        //this.body = data.rooms;
+        roomListTpl.render(data, this.res);
+        
                 
     },
     show: function *(next) {
