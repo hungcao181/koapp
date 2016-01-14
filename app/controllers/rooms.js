@@ -35,36 +35,37 @@ module.exports = {
         this.body = data.rooms;
     },
     addwithMedia: function *(next) {
-        var parts = mediaParse(this, {
+        let parts = mediaParse(this, {
             autoFields: true
         });
-        var part;
-        var file, relFile;
-        var files = {};
-        let room;
+        let part;
+        let file = {};
+        let files = [];
+        let room = {};
         while (part = yield parts) {
             // it's a stream
             console.log('part:', part);
             // file = appRoot + '/public/images/' + part.filename;
-            file = appRoot + '/public/images/' + part.filename;
-            relFile = '/images/' + part.filename;
-            files[part.fieldname] = relFile;
-            console.log('file ', file);
-            part.pipe(fs.createWriteStream(file));
+            let newfile = appRoot + '/public/images/' + part.filename;
+            file.path = '/images/' + part.filename;
+            file.name = part.fieldname;
+            files.push(file);
+            part.pipe(fs.createWriteStream(newfile));
         }
         console.log('and we are done parsing the form!');
         // .field holds all the fields in key/value form
-        // console.log(parts.field._csrf)
-        // .fields holds all the fields in [key, value] form
-        // console.log(parts.fields[0])
-        room = {'title': parts.fields['title']};
-        room.description = parts.fields['description'];
-        room.MinimumAmount = parts.fields['MinimumAmount'];
-        room.price = parts.fields['price'];
-        room['image'] = relFile;
-        // files.forEach(function (file) {
-        //     console.log('file');
-        // });
+        // console.log('fields ', parts.fields);
+        files.forEach(function (file) {
+            room[file.name] = file.path;
+        });
+        parts.fields.forEach(function (f) {
+            // console.log(f[0], '-',f[1] );
+            room[f[0]] = f[1];
+        });
+        // room = {'title': parts.fields['title']};
+        // room.description = parts.fields['description'];
+        // room.MinimumAmount = parts.fields['MinimumAmount'];
+        // room.price = parts.fields['price'];
         yield rooms.insert(room);
         let data = {rooms: yield rooms.find({})};
         //this.body = data.rooms;
