@@ -4,9 +4,10 @@ let wrap        = require('co-monk');
 let parse       = require('co-body');
 let mediaParse  = require('co-busboy');
 let fs          = require('fs');
-let path        = require('path');
-
 let appRoot     = require('app-root-path');
+let path        = require('path');
+let imageDir        = require(path.join(appRoot + '/config/dir'));
+// let imageDir    = require('/config/dir');
 
 let rooms = wrap(monkdb.get('rooms'));
 let initRooms = require('./initData.js').initRooms;
@@ -39,36 +40,27 @@ module.exports = {
             autoFields: true
         });
         let part;
-        let file = {};
         let files = [];
         let room = {};
         while (part = yield parts) {
             // it's a stream
             console.log('part:', part);
-            // file = appRoot + '/public/images/' + part.filename;
-            let newfile = appRoot + '/public/images/' + part.filename;
-            file.path = '/images/' + part.filename;
+            let file = {};
+            file.path = path.join(imageDir.imageDir, part.filename);
             file.name = part.fieldname;
             files.push(file);
-            part.pipe(fs.createWriteStream(newfile));
+            part.pipe(fs.createWriteStream(path.join(imageDir.imageFullPath,part.filename)));
         }
         console.log('and we are done parsing the form!');
         // .field holds all the fields in key/value form
-        // console.log('fields ', parts.fields);
         files.forEach(function (file) {
             room[file.name] = file.path;
         });
         parts.fields.forEach(function (f) {
-            // console.log(f[0], '-',f[1] );
             room[f[0]] = f[1];
         });
-        // room = {'title': parts.fields['title']};
-        // room.description = parts.fields['description'];
-        // room.MinimumAmount = parts.fields['MinimumAmount'];
-        // room.price = parts.fields['price'];
         yield rooms.insert(room);
         let data = {rooms: yield rooms.find({})};
-        //this.body = data.rooms;
         roomListTpl.render(data, this.res);
         
                 
