@@ -97164,13 +97164,19 @@ var QuickAdd = React.createClass({
     open: function open() {
         this.setState({ showModal: true });
     },
+    _saveAdd: function _saveAdd(evt) {
+        evt.preventDefault();
+        var form = evt.target.closest('form');
+        var formData = new FormData(form);
+        AppActions.addData(formData);
+        form.reset();
+    },
     _onSubmit: function _onSubmit(evt) {
         evt.preventDefault();
         var formData = new FormData(evt.target);
         console.log('formdata submitted ', formData);
         AppActions.addData(formData);
-        // AppActions.addData({formData: formData});
-        // this.setState({showModal: false});
+        this.setState({ showModal: false });
     },
     _onInputsChange: function _onInputsChange(evt) {
         evt.preventDefault();
@@ -97210,39 +97216,23 @@ var QuickAdd = React.createClass({
                     null,
                     React.createElement(
                         'form',
-                        { id: 'RoomQuickAdd', encType: 'multipart/form-data', action: '/rooms', method: 'post' },
-                        React.createElement('input', { type: 'text', name: 'title', label: 'Title', placeholder: 'Enter title' }),
-                        React.createElement('br', null),
-                        'file: ',
-                        React.createElement('input', { type: 'file', name: 'image', label: 'File', help: '[Optional] Block level help text' }),
-                        React.createElement('br', null),
-                        React.createElement('input', { type: 'textarea', name: 'description', label: 'Description', placeholder: 'Enter description' }),
-                        React.createElement('br', null),
-                        React.createElement('input', { type: 'text', name: 'price', label: 'Price', placeholder: 'Enter price' }),
-                        React.createElement('br', null),
-                        React.createElement('input', { type: 'text', name: 'MinimumAmount', label: 'MinimumAmount', placeholder: 'Enter MinimumAmount' }),
-                        React.createElement('br', null),
-                        React.createElement('input', { type: 'submit', value: 'Submit' })
+                        { id: 'RoomQuickAdd', name: 'roomInfo', encType: 'multipart/form-data', method: 'post', onSubmit: this._onSubmit },
+                        React.createElement(Input, { type: 'text', name: 'title', label: 'Title', placeholder: 'Enter title' }),
+                        React.createElement(Input, { type: 'file', name: 'image', label: 'File', help: '[Optional] Block level help text' }),
+                        React.createElement(Input, { type: 'textarea', name: 'description', label: 'Description', placeholder: 'Enter description' }),
+                        React.createElement(Input, { type: 'text', name: 'price', label: 'Price', placeholder: 'Enter price' }),
+                        React.createElement(Input, { type: 'text', name: 'MinimumAmount', label: 'MinimumAmount', placeholder: 'Enter MinimumAmount' }),
+                        React.createElement(Input, { type: 'submit', value: 'Save' }),
+                        React.createElement(
+                            Button,
+                            { onClick: this._saveAdd },
+                            'Save & Add'
+                        )
                     )
                 ),
                 React.createElement(
                     Modal.Footer,
                     null,
-                    React.createElement(
-                        'form',
-                        { id: 'aRoomQuickAdd', name: 'roomInfo', encType: 'multipart/form-data', method: 'post', onSubmit: this._onSubmit },
-                        React.createElement('input', { type: 'text', name: 'title', label: 'Title', placeholder: 'Enter title', onChange: this._onInputsChange }),
-                        React.createElement('input', { type: 'file', name: 'image', label: 'File', help: '[Optional] Block level help text', onChange: this._onInputsChange }),
-                        React.createElement('input', { type: 'textarea', name: 'description', label: 'Description', placeholder: 'Enter description', onChange: this._onInputsChange }),
-                        React.createElement('input', { type: 'text', name: 'price', label: 'Price', placeholder: 'Enter price', onChange: this._onInputsChange }),
-                        React.createElement('input', { type: 'text', name: 'MinimumAmount', label: 'MinimumAmount', placeholder: 'Enter MinimumAmount', onChange: this._onInputsChange }),
-                        React.createElement('input', { type: 'submit', value: 'Submit Button' })
-                    ),
-                    React.createElement(
-                        Button,
-                        { onClick: this.save },
-                        'Save'
-                    ),
                     React.createElement(
                         Button,
                         { onClick: this.close },
@@ -97619,27 +97609,19 @@ var roomStore = assign({}, EventEmitter.prototype, {
         // co(function *() {
         //     let response = yield coRequest({
         //         url: options.url,
-        //         formData: data.formData,
+        //         formData: data,
         //         method: 'post',
+        //         headers: {
+        //             'Accept': 'application/json'
+        //         },
         //         processData: false,
         //         contentType: false
         //     });
         //     _rooms = JSON.parse(response.body);
-        //     this.emitOK200();
+        //     this.emitChange();
         // }.bind(this)).catch(function (err) {
         //         console.log('err: ', err);
         // });   
-        // console.log('storing data to ', options.url);
-        // request.post({
-        // url: options.url,
-        // formData: data,
-        // processData: false,
-        // contentType: false
-        // }).on('error', this.onError.bind(this))
-        // .on('data', function (body) {
-        //     _rooms = JSON.parse(body);
-        //     this.emitOK200();
-        // });
         $.ajax({
             url: options.url,
             type: 'post',

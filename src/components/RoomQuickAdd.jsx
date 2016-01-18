@@ -29,13 +29,20 @@ var QuickAdd = React.createClass({
     open() {
         this.setState({ showModal: true });
     },
+
+    _saveAdd(evt) {
+        evt.preventDefault();
+        let form = evt.target.closest('form');
+        var formData = new FormData(form);
+        AppActions.addData(formData);
+        form.reset();
+    },
     _onSubmit(evt) {
         evt.preventDefault();
         var formData = new FormData(evt.target);
         console.log('formdata submitted ', formData);
         AppActions.addData(formData);
-        // AppActions.addData({formData: formData});
-        // this.setState({showModal: false}); 
+        this.setState({showModal: false}); 
     },
     _onInputsChange(evt) {
         evt.preventDefault();
@@ -59,26 +66,17 @@ var QuickAdd = React.createClass({
                     <Modal.Title>Modal heading</Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
-                    <form id='RoomQuickAdd' encType='multipart/form-data' action = '/rooms' method='post'>
-                        <input type="text" name='title' label="Title" placeholder="Enter title"/><br/>
-                        file: <input type="file" name='image' label="File" help="[Optional] Block level help text"/><br/>
-                        <input type="textarea" name='description' label="Description" placeholder="Enter description"/><br/>
-                        <input type="text" name='price' label="Price" placeholder="Enter price"/><br/>
-                        <input type="text" name='MinimumAmount' label="MinimumAmount" placeholder="Enter MinimumAmount"/><br/>
-                        <input type="submit" value="Submit"/>
+                    <form id='RoomQuickAdd' name='roomInfo' encType='multipart/form-data' method='post' onSubmit={this._onSubmit}>
+                        <Input type="text" name='title' label="Title" placeholder="Enter title"/>
+                        <Input type="file" name='image' label="File" help="[Optional] Block level help text"/>
+                        <Input type="textarea" name='description' label="Description" placeholder="Enter description"/>
+                        <Input type="text" name='price' label="Price" placeholder="Enter price"/>
+                        <Input type="text" name='MinimumAmount' label="MinimumAmount" placeholder="Enter MinimumAmount"/>
+                        <Input type="submit" value="Save" />
+                        <Button onClick={this._saveAdd}>Save & Add</Button>
                     </form>
                 </Modal.Body>
                 <Modal.Footer>
-                    <form id='aRoomQuickAdd' name='roomInfo' encType='multipart/form-data' method='post' onSubmit={this._onSubmit}>
-                        <input type="text" name='title' label="Title" placeholder="Enter title" onChange={this._onInputsChange}/>
-                        <input type="file" name='image' label="File" help="[Optional] Block level help text" onChange={this._onInputsChange}/>
-                        <input type="textarea" name='description' label="Description" placeholder="Enter description" onChange={this._onInputsChange}/>
-                        <input type="text" name='price' label="Price" placeholder="Enter price" onChange={this._onInputsChange}/>
-                        <input type="text" name='MinimumAmount' label="MinimumAmount" placeholder="Enter MinimumAmount" onChange={this._onInputsChange}/>
-                        <input type="submit" value="Submit Button" />
-                    </form>
-
-                    <Button onClick={this.save}>Save</Button>
                     <Button onClick={this.close}>Close</Button>
                 </Modal.Footer>
             </Modal>

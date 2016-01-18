@@ -31,27 +31,19 @@ let roomStore = assign({}, EventEmitter.prototype, {
         // co(function *() {
         //     let response = yield coRequest({
         //         url: options.url,
-        //         formData: data.formData,
+        //         formData: data,
         //         method: 'post',
+        //         headers: {
+        //             'Accept': 'application/json'
+        //         },
         //         processData: false,
         //         contentType: false
         //     });
         //     _rooms = JSON.parse(response.body);
-        //     this.emitOK200();
+        //     this.emitChange();
         // }.bind(this)).catch(function (err) {
         //         console.log('err: ', err);
         // });    
-        // console.log('storing data to ', options.url);
-        // request.post({
-            // url: options.url,
-            // formData: data,
-            // processData: false,
-            // contentType: false
-        // }).on('error', this.onError.bind(this))
-        // .on('data', function (body) {
-        //     _rooms = JSON.parse(body);
-        //     this.emitOK200();
-        // });
         $.ajax({
             url: options.url,
             type: 'post',
