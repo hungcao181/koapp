@@ -97143,12 +97143,12 @@ var Popover = require('react-bootstrap/lib/Popover');
 var Tooltip = require('react-bootstrap/lib/Tooltip');
 var Image = require('react-bootstrap/lib/Image');
 // let Grid = require('react-bootstrap/lib/Grid');
-// let Row = require('react-bootstrap/lib/Row');
-// let Col = require('react-bootstrap/lib/Col');
+var Row = require('react-bootstrap/lib/Row');
+var Col = require('react-bootstrap/lib/Col');
 var Input = require('react-bootstrap/lib/Input');
 var ButtonInput = require('react-bootstrap/lib/ButtonInput');
 var Button = require('react-bootstrap/lib/Button');
-
+var ButtonToolbar = require('react-bootstrap/lib/ButtonToolbar');
 var OverlayTrigger = require('react-bootstrap/lib/OverlayTrigger');
 
 var AppActions = require('../actions/AppActions');
@@ -97208,7 +97208,7 @@ var QuickAdd = React.createClass({
                     React.createElement(
                         Modal.Title,
                         null,
-                        'Modal heading'
+                        'Adding room info'
                     )
                 ),
                 React.createElement(
@@ -97216,29 +97216,21 @@ var QuickAdd = React.createClass({
                     null,
                     React.createElement(
                         'form',
-                        { id: 'RoomQuickAdd', name: 'roomInfo', encType: 'multipart/form-data', method: 'post', onSubmit: this._onSubmit },
-                        React.createElement(Input, { type: 'text', name: 'title', label: 'Title', placeholder: 'Enter title' }),
-                        React.createElement(Input, { type: 'file', name: 'image', label: 'File', help: '[Optional] Block level help text' }),
-                        React.createElement(Input, { type: 'textarea', name: 'description', label: 'Description', placeholder: 'Enter description' }),
-                        React.createElement(Input, { type: 'text', name: 'price', label: 'Price', placeholder: 'Enter price' }),
-                        React.createElement(Input, { type: 'text', name: 'MinimumAmount', label: 'MinimumAmount', placeholder: 'Enter MinimumAmount' }),
-                        React.createElement(Input, { type: 'submit', value: 'Save' }),
+                        { id: 'RoomQuickAdd', name: 'roomInfo', encType: 'multipart/form-data', method: 'post', onSubmit: this._onSubmit, className: 'form-horizontal' },
+                        React.createElement(Input, { type: 'text', name: 'title', label: 'Title', placeholder: 'Enter title', labelClassName: 'col-xs-2', wrapperClassName: 'col-xs-10' }),
+                        React.createElement(Input, { type: 'file', name: 'image', label: 'File', help: '[Optional] Block level help text', labelClassName: 'col-xs-2', wrapperClassName: 'col-xs-10' }),
+                        React.createElement(Input, { type: 'textarea', name: 'description', label: 'Description', placeholder: 'Enter description', labelClassName: 'col-xs-2', wrapperClassName: 'col-xs-10' }),
+                        React.createElement(Input, { type: 'text', name: 'price', label: 'Price', placeholder: 'Enter price', labelClassName: 'col-xs-2', wrapperClassName: 'col-xs-10' }),
+                        React.createElement(Input, { type: 'text', name: 'MinimumAmount', label: 'MinimumAmount', placeholder: 'Enter MinimumAmount', labelClassName: 'col-xs-2', wrapperClassName: 'col-xs-10' }),
+                        React.createElement(ButtonInput, { type: 'submit', bsSize: 'lg', bsStyle: 'default', value: 'Save' }),
                         React.createElement(
-                            Button,
-                            { onClick: this._saveAdd },
-                            'Save & Add'
+                            ButtonInput,
+                            { onClick: this._saveAdd, bsStyle: 'primary', bsSize: 'lg' },
+                            'Save +'
                         )
                     )
                 ),
-                React.createElement(
-                    Modal.Footer,
-                    null,
-                    React.createElement(
-                        Button,
-                        { onClick: this.close },
-                        'Close'
-                    )
-                )
+                React.createElement(Modal.Footer, null)
             )
         );
     }
@@ -97246,7 +97238,7 @@ var QuickAdd = React.createClass({
 
 module.exports = QuickAdd;
 
-},{"../actions/AppActions":740,"fs":62,"react":648,"react-bootstrap/lib/Button":418,"react-bootstrap/lib/ButtonInput":420,"react-bootstrap/lib/Image":437,"react-bootstrap/lib/Input":438,"react-bootstrap/lib/Modal":446,"react-bootstrap/lib/OverlayTrigger":462,"react-bootstrap/lib/Popover":470,"react-bootstrap/lib/Tooltip":481,"react-dom":495}],744:[function(require,module,exports){
+},{"../actions/AppActions":740,"fs":62,"react":648,"react-bootstrap/lib/Button":418,"react-bootstrap/lib/ButtonInput":420,"react-bootstrap/lib/ButtonToolbar":421,"react-bootstrap/lib/Col":424,"react-bootstrap/lib/Image":437,"react-bootstrap/lib/Input":438,"react-bootstrap/lib/Modal":446,"react-bootstrap/lib/OverlayTrigger":462,"react-bootstrap/lib/Popover":470,"react-bootstrap/lib/Row":473,"react-bootstrap/lib/Tooltip":481,"react-dom":495}],744:[function(require,module,exports){
 'use strict';
 
 var React = require('react');
