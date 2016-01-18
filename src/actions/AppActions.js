@@ -15,10 +15,10 @@ let AppActions = {
             type: ActionTypes.UPDATE_ROOM
         })
     },
-    addData: function (room) {
+    addData: function (data) {
         AppDispatcher.dispatch({
             type: ActionTypes.ADD_ROOM,
-            data: room
+            data: data
         })
     },
     delRoom: function (id) {

@@ -32,3 +32,5 @@ http://www.marcusoft.net/2014/02/mnb-monk.html
 ** WebSockets vs REST: Understanding the Difference **
 https://www.pubnub.com/blog/2015-01-05-websockets-vs-rest-api-understanding-the-difference/
 
+** To send form data using Ajax **
+https://developer.mozilla.org/en-US/docs/Web/API/FormData/Using_FormData_Objects

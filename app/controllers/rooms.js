@@ -36,6 +36,7 @@ module.exports = {
         this.body = data.rooms;
     },
     addwithMedia: function *(next) {
+        console.log('request ', this.req);
         let parts = mediaParse(this, {
             autoFields: true
         });
@@ -61,9 +62,13 @@ module.exports = {
         });
         yield rooms.insert(room);
         let data = {rooms: yield rooms.find({})};
-        roomListTpl.render(data, this.res);
-        
-                
+        switch (this.accepts('json', 'html')) {
+            case 'json':
+                this.body = data.rooms;
+                break;
+            default:
+                roomListTpl.render(data, this.res); 
+        }
     },
     show: function *(next) {
         let id = this.params.id;

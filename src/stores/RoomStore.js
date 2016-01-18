@@ -28,33 +28,49 @@ let roomStore = assign({}, EventEmitter.prototype, {
         });    
     },
     storeData: function (data) {
-        co(function *() {
-            let response = yield coRequest({
-                url: options.url,
-                formData: data,
-                method: 'post'
-            });
-            _rooms = JSON.parse(response.body);
-            this.emitOK200();
-        }.bind(this)).catch(function (err) {
-                console.log('err: ', err);
-        });    
-
-        // if (data.title) {
-        //     console.log('storing data to ', options.url);
-        //     request.post({
+        // co(function *() {
+        //     let response = yield coRequest({
         //         url: options.url,
-        //         formData: data
-        //     }, function (err, res, body) {
-        //         if (err) {
-        //             console.log('err ', err);
-        //         } else {
-        //             _rooms = JSON.parse(body);
-        //             console.log('updating change from server:', _rooms);
-        //             this.emitOK200();
-        //         }
-        //     }.bind(this))
-        // }
+        //         formData: data.formData,
+        //         method: 'post',
+        //         processData: false,
+        //         contentType: false
+        //     });
+        //     _rooms = JSON.parse(response.body);
+        //     this.emitOK200();
+        // }.bind(this)).catch(function (err) {
+        //         console.log('err: ', err);
+        // });    
+        // console.log('storing data to ', options.url);
+        // request.post({
+            // url: options.url,
+            // formData: data,
+            // processData: false,
+            // contentType: false
+        // }).on('error', this.onError.bind(this))
+        // .on('data', function (body) {
+        //     _rooms = JSON.parse(body);
+        //     this.emitOK200();
+        // });
+        $.ajax({
+            url: options.url,
+            type: 'post',
+            data: data,
+            headers: {
+                'Accept': 'application/json'
+            },
+            processData: false,
+            contentType: false
+        }).done(function (body) {
+            _rooms = JSON.parse(JSON.stringify(body));
+            this.emitChange();
+        }.bind(this))
+        .fail(function (err) {
+            console.log('error! ', err);
+        });
+    },
+    onError: function (error) {
+        console.log(error);
     },
     deleteData: function (id) {
         request.del(options.url.concat('/', id), function (err, res, body) {
