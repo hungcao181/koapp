@@ -74,7 +74,6 @@ var ItemList = React.createClass({
             <div className = "items rooms">
                 <ButtonGroup>
                     <ButtonInput onClick={this._onAdd}>Add</ButtonInput>
-                    <ButtonInput>Remove Selected</ButtonInput>
                 </ButtonGroup>
                 {ItemNodes}
             </div>

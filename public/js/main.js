@@ -97025,11 +97025,6 @@ var ItemList = React.createClass({
                     ButtonInput,
                     { onClick: this._onAdd },
                     'Add'
-                ),
-                React.createElement(
-                    ButtonInput,
-                    null,
-                    'Remove Selected'
                 )
             ),
             ItemNodes
@@ -97164,30 +97159,27 @@ var QuickAdd = React.createClass({
     open: function open() {
         this.setState({ showModal: true });
     },
-    _saveAdd: function _saveAdd(evt) {
+    _onSaveAdd: function _onSaveAdd(evt) {
+        // evt.preventDefault();
+        // let form = evt.target.closest('form');
         evt.preventDefault();
-        var form = evt.target.closest('form');
+        var form = document.getElementById('RoomQuickAdd');
         var formData = new FormData(form);
         AppActions.addData(formData);
         form.reset();
     },
-    _onSubmit: function _onSubmit(evt) {
+    _onSave: function _onSave(evt) {
         evt.preventDefault();
-        var formData = new FormData(evt.target);
-        console.log('formdata submitted ', formData);
+        var form = document.getElementById('RoomQuickAdd');
+        var formData = new FormData(form);
         AppActions.addData(formData);
         this.setState({ showModal: false });
     },
-    _onInputsChange: function _onInputsChange(evt) {
+    _onSubmit: function _onSubmit(evt) {
         evt.preventDefault();
-        var f = evt.target;
-        var data = this.state.data;
-        if (f.getAttribute('name') == 'file') {
-            data[f.getAttribute('name')] = fs.createReadStream(f.value);
-        } else {
-            data[f.getAttribute('name')] = f.value;
-        }
-        this.setState({ data: data });
+        var formData = new FormData(evt.target);
+        AppActions.addData(formData);
+        this.setState({ showModal: false });
     },
     render: function render() {
         var data = this.props.data;
@@ -97221,16 +97213,27 @@ var QuickAdd = React.createClass({
                         React.createElement(Input, { type: 'file', name: 'image', label: 'File', help: '[Optional] Block level help text', labelClassName: 'col-xs-2', wrapperClassName: 'col-xs-10' }),
                         React.createElement(Input, { type: 'textarea', name: 'description', label: 'Description', placeholder: 'Enter description', labelClassName: 'col-xs-2', wrapperClassName: 'col-xs-10' }),
                         React.createElement(Input, { type: 'text', name: 'price', label: 'Price', placeholder: 'Enter price', labelClassName: 'col-xs-2', wrapperClassName: 'col-xs-10' }),
-                        React.createElement(Input, { type: 'text', name: 'MinimumAmount', label: 'MinimumAmount', placeholder: 'Enter MinimumAmount', labelClassName: 'col-xs-2', wrapperClassName: 'col-xs-10' }),
-                        React.createElement(ButtonInput, { type: 'submit', bsSize: 'lg', bsStyle: 'default', value: 'Save' }),
+                        React.createElement(Input, { type: 'text', name: 'Min Amount', label: 'MinimumAmount', placeholder: 'Enter MinimumAmount', labelClassName: 'col-xs-2', wrapperClassName: 'col-xs-10' })
+                    )
+                ),
+                React.createElement(
+                    Modal.Footer,
+                    null,
+                    React.createElement(
+                        ButtonToolbar,
+                        { className: 'pull-right' },
                         React.createElement(
-                            ButtonInput,
-                            { onClick: this._saveAdd, bsStyle: 'primary', bsSize: 'lg' },
+                            Button,
+                            { onClick: this._onSave, bsStyle: 'default' },
+                            'Save'
+                        ),
+                        React.createElement(
+                            Button,
+                            { onClick: this._onSaveAdd, bsStyle: 'primary' },
                             'Save +'
                         )
                     )
-                ),
-                React.createElement(Modal.Footer, null)
+                )
             )
         );
     }

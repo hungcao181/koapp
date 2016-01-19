@@ -30,30 +30,27 @@ var QuickAdd = React.createClass({
         this.setState({ showModal: true });
     },
 
-    _saveAdd(evt) {
+    _onSaveAdd(evt) {
+        // evt.preventDefault();
+        // let form = evt.target.closest('form');
         evt.preventDefault();
-        let form = evt.target.closest('form');
+        let form = document.getElementById('RoomQuickAdd');
         var formData = new FormData(form);
         AppActions.addData(formData);
         form.reset();
     },
-    _onSubmit(evt) {
+    _onSave(evt) {
         evt.preventDefault();
-        var formData = new FormData(evt.target);
-        console.log('formdata submitted ', formData);
+        var form = document.getElementById('RoomQuickAdd');
+        var formData = new FormData(form);
         AppActions.addData(formData);
         this.setState({showModal: false}); 
     },
-    _onInputsChange(evt) {
+    _onSubmit(evt) {
         evt.preventDefault();
-        let f = evt.target;
-        let data = this.state.data;
-        if (f.getAttribute('name') == 'file') {
-            data[f.getAttribute('name')] = fs.createReadStream(f.value);    
-        }else {
-            data[f.getAttribute('name')] = f.value;
-        }
-        this.setState({data: data});
+        var formData = new FormData(evt.target);
+        AppActions.addData(formData);
+        this.setState({showModal: false}); 
     },
     render() {
         let data = this.props.data;
@@ -71,12 +68,14 @@ var QuickAdd = React.createClass({
                         <Input type="file" name='image' label="File" help="[Optional] Block level help text" labelClassName="col-xs-2" wrapperClassName="col-xs-10"/>
                         <Input type="textarea" name='description' label="Description" placeholder="Enter description" labelClassName="col-xs-2" wrapperClassName="col-xs-10"/>
                         <Input type="text" name='price' label="Price" placeholder="Enter price" labelClassName="col-xs-2" wrapperClassName="col-xs-10"/>
-                        <Input type="text" name='MinimumAmount' label="MinimumAmount" placeholder="Enter MinimumAmount" labelClassName="col-xs-2" wrapperClassName="col-xs-10"/>
-                                    <ButtonInput type="submit" bsSize="lg" bsStyle="default" value="Save"></ButtonInput>
-                                    <ButtonInput onClick={this._saveAdd} bsStyle="primary" bsSize="lg">Save +</ButtonInput>
+                        <Input type="text" name='Min Amount' label="MinimumAmount" placeholder="Enter MinimumAmount" labelClassName="col-xs-2" wrapperClassName="col-xs-10"/>
                     </form>
                 </Modal.Body>
                 <Modal.Footer>
+                    <ButtonToolbar className='pull-right'>
+                        <Button onClick={this._onSave} bsStyle="default">Save</Button>
+                        <Button onClick={this._onSaveAdd} bsStyle="primary">Save +</Button>
+                    </ButtonToolbar>
                 </Modal.Footer>
             </Modal>
             </div>
