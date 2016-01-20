@@ -1,0 +1,12 @@
+<layout-use template="./default-layout.marko" show-header="$true">
+    <layout-put into="title">Sign up</layout-put>
+    <layout-put into="body">
+        <form id="signupForm" action="/register" method="post">
+            First Name: <input type="text" name="firstname" label="FirstName" placeholder="Enter your first name"/>
+            Last Name: <input type="text" name="lastname" label="LastName" placeholder="Enter your last name"/>
+            User Name: <input type="text" name="username" label="User Name" placeholder="Enter your username"/>
+            Password: <input type="password" name="password" label="Password" placeholder="Your password"/>
+            <input type="submit" value="Sign up"/>
+        </form>
+    </layout-put>
+</layout-use>
