@@ -11,6 +11,7 @@ let monkdb      = require('../models/config').monkdb;
 let wrap        = require('co-monk');
 let co          = require('co');
 let parse       = require('co-body');
+let jwt         = require('jsonwebtoken');
 
 let users = wrap(monkdb.get("users"));
 let rooms = wrap(monkdb.get("rooms"));
@@ -33,7 +34,7 @@ module.exports = {
         aboutTpl.render(data, this.res);
     },
     profile: function* (next) {
-        let data = {};
+        let data = {username: this.state.user};
         profileTpl.render(data, this.res);
     },
     karaoke: function* (next) {
@@ -71,15 +72,18 @@ module.exports = {
     authenticate: function* (next) {
         let body = yield parse.form(this);
         let user = {},
-            message = '';
+            message = '',
+            token;
         user.username = body.username;
         user.password = body.password;
         let recs = yield users.find({'username': user.username, 'password': user.password});
         if (recs.length == 0) {
             message = 'Not found';
         } else {
-            message = 'welcome back!'
+            message = 'welcome back!';
+            token = jwt.sign({username: body.username}, 'secretkey', {expiresInMinutes: 1440});
         }
-        this.body = message;
+        // this.state.token = token;
+        this.body = {message: message, token: token};
     }
 } 
