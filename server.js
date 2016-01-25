@@ -4,36 +4,42 @@ var compress    = require('koa-compress');
 var serve       = require('koa-static');
 var logger      = require('koa-logger');
 var app         = koa();
+let appRoot     = require('app-root-path');
+let secret      = require(appRoot + '/config/keys').secret;
 let jwt         = require('jsonwebtoken');
 let koajwt      = require('koa-jwt');
 app.use(logger());
 
-app.use(function *(next) {
+app.use(function* (next) {
     var start = new Date;
     yield next;
     var ms = new Date - start;
     console.log('%s %s - %s', this.method, this.url, ms);
 });
 
-//should use this.state instead of this.req
-// app.use(function *(next) {
-//     let token = this.get('x-access-token');
-//     let decodedToken = yield jwt.verify(token, 'secretkey');
-//     console.log('decoded ', decodedToken);
-//     if (decodedToken.username) {
-//         this.req.username = decodedToken.username;
-//         this.req.isAuthenticated = true;
-//     }
-//     yield next;
-// })
+app.use(function* (next) {
+    let token = this.cookies.get('user'); // this.get('x-access-token');
+    
+    console.log('token ${secret} ', token);
+    if (token) {
+        let decodedToken = yield jwt.verify(token, secret);
+        console.log('decoded ', decodedToken);
+        if (decodedToken.username) {
+            this.state.user = decodedToken;
+            // this.req.isAuthenticated = true;
+        };
+    }
+    yield next;
+});
 
 // without passthrough: true, middleware below this line will be only reached if JWT token is valid
-// unless the URL starts with '/public'
-app.use(
-    koajwt({ secret: 'secretkey', passthrough: false})
-    //.unless({ path: [/^\/public/] })
-);
+// unless the URL starts with '/public': //.unless({ path: [/^\/public/] })
+// app.use(koajwt({ secret: secret, passthrough: true}));
 
+app.use(function* (next) {
+    console.log('wow-----user ', this.user , '----state ', this.state);
+    yield next;
+});
 //compressing
 
 app.use(compress({

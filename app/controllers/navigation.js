@@ -11,12 +11,16 @@ let monkdb      = require('../models/config').monkdb;
 let wrap        = require('co-monk');
 let co          = require('co');
 let parse       = require('co-body');
+let koajwt         = require('koa-jwt'); 
 let jwt         = require('jsonwebtoken');
 
 let users = wrap(monkdb.get("users"));
 let rooms = wrap(monkdb.get("rooms"));
 let initRooms = require('./initData.js').initRooms;
 let initUsers = require('./initData.js').initUsers;
+
+let appRoot     = require('app-root-path');
+let secret      = require(appRoot + '/config/keys').secret;
 
 module.exports = {
     home: function* (next) {
@@ -47,6 +51,9 @@ module.exports = {
     login: function* (next) {
         loginTpl.render({}, this.res);
     },
+    logout: function* (next) {
+        this.cookies.set('user', null);
+    },
     signup: function* (next) {
         signupTpl.render({}, this.res)
     },
@@ -71,6 +78,7 @@ module.exports = {
     },
     authenticate: function* (next) {
         let body = yield parse.form(this);
+        console.log('body ', body);
         let user = {},
             message = '',
             token;
@@ -80,10 +88,11 @@ module.exports = {
         if (recs.length == 0) {
             message = 'Not found';
         } else {
-            message = 'welcome back!';
-            token = jwt.sign({username: body.username}, 'secretkey', {expiresInMinutes: 1440});
+            message = 'welcome back!' + user.username;
+            token = jwt.sign({username: user.username}, secret, {expiresInMinutes: 1440});
         }
         // this.state.token = token;
         this.body = {message: message, token: token};
+        // this.redirect('/karaoke');
     }
 } 

@@ -13,7 +13,10 @@ let endPoint = '/rooms';
 let _rooms = {};
 let options = {
     url: window.location.origin + endPoint,
-    method: 'get'
+    method: 'get',
+    headers: {
+        Authorization: localStorage.token? 'Bearer ' + localStorage.token : ''
+    }
 };
 
 let roomStore = assign({}, EventEmitter.prototype, {

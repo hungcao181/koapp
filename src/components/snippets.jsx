@@ -26,3 +26,33 @@
                     <Button onClick={this.close}>Close</Button>
                 </Modal.Footer>
             </Modal>
+
+        <form id="loginForm" action="/authenticate" method="post">
+            <input type="text" name="username" label="User Name" placeholder="Enter your username"/>
+            <input type="password" name="password" label="Password" placeholder="Your password"/>
+            <input type="submit" value="Login"/>
+        </form>
+
+
+    authenticate: function* (next) {
+        let parts = mediaParse(this, {
+            autoFields: true
+        });
+        let user = {},
+            message = '',
+            token;
+        parts.fields.forEach(function (f) {
+            user[f[0]] = f[1];
+        });
+        console.log(parts.fields,'---', user);
+        let recs = yield users.find({'username': user.username, 'password': user.password});
+        if (recs.length > 0) {
+            message = 'welcome back!' + user.username;
+            token = koajwt.sign({username: user.username}, 'secretkey', {expiresInMinutes: 1440});
+        } else {
+            message = 'Not found';
+        }
+        // this.state.token = token;
+        this.body = {message: message, token: token};
+        // this.redirect('/karaoke');
+    }

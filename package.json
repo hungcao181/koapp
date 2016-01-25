@@ -31,7 +31,6 @@
     "co-monk": "^1.0.0",
     "co-request": "^1.0.0",
     "expect": "^1.13.0",
-    "jsonwebtoken": "^5.5.4",
     "keymirror": "^0.1.1",
     "koa": "^1.1.2",
     "koa-compress": "^1.0.8",

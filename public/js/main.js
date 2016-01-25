@@ -97569,7 +97569,10 @@ var endPoint = '/rooms';
 var _rooms = {};
 var options = {
     url: window.location.origin + endPoint,
-    method: 'get'
+    method: 'get',
+    headers: {
+        Authorization: localStorage.token ? 'Bearer ' + localStorage.token : ''
+    }
 };
 
 var roomStore = assign({}, EventEmitter.prototype, {

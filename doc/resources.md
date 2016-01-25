@@ -34,3 +34,6 @@ https://www.pubnub.com/blog/2015-01-05-websockets-vs-rest-api-understanding-the-
 
 ** To send form data using Ajax **
 https://developer.mozilla.org/en-US/docs/Web/API/FormData/Using_FormData_Objects
+
+** Token based **
+https://scotch.io/tutorials/authenticate-a-node-js-api-with-json-web-tokens
