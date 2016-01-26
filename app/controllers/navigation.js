@@ -91,12 +91,18 @@ module.exports = {
         let recs = yield users.find({'username': user.username, 'password': user.password});
         if (recs.length == 0) {
             message = 'Not found';
+            this.body = {message: message};
         } else {
             message = 'welcome back!' + user.username;
             token = jwt.sign({username: user.username}, secret, {expiresInMinutes: 1440});
+            switch (this.accepts('json', 'html')) {
+                case 'html':
+                    this.cookies.set('user',token);
+                    this.redirect('/karaoke');
+                    break;
+                default:
+                    this.body = {message: message, token: token};
+            }
         }
-        // this.state.token = token;
-        this.body = {message: message, token: token};
-        // this.redirect('/karaoke');
     }
 } 

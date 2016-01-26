@@ -56,3 +56,37 @@
         this.body = {message: message, token: token};
         // this.redirect('/karaoke');
     }
+
+
+
+    <layout-put into="script">
+        <script>
+                            
+            function login() {
+                //var data = new FormData(document.getElementById('loginForm'));
+                var fields = $("#loginForm").serializeArray();
+                var data = {};
+                $.each(fields, function (i, f) {
+                    data[f.name] = f.value;
+                });
+                console.log('data ', data);
+                $.ajax({
+                    url: '/authenticate',
+                    type: 'post',
+                    data: data,
+                    headers: {
+                        'Accept': 'application/json'
+                    }
+                }).done(function (body) {
+                    console.log('body: ', body);
+                    if (body.token) {
+                        localStorage.token = body.token;
+                        document.cookie = 'user='+ body.token;
+                        window.location = '/karaoke';
+                    }
+                }).fail(function (err) {
+                    console.log('error! ', err);
+                });
+            }
+        </script>
+    </layout-put>
