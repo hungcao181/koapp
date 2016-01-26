@@ -97590,10 +97590,9 @@ var roomStore = assign({}, EventEmitter.prototype, {
                             response = _context.sent;
 
                             _rooms = JSON.parse(response.body);
-                            console.log('loading data from server:', _rooms);
                             this.emitChange();
 
-                        case 6:
+                        case 5:
                         case 'end':
                             return _context.stop();
                     }
@@ -97649,7 +97648,6 @@ var roomStore = assign({}, EventEmitter.prototype, {
         this.emit(OK200_EVENT);
     },
     emitChange: function emitChange() {
-        console.log('emitting change');
         this.emit(CHANGE_EVENT);
     },
     addChangeListener: function addChangeListener(callback) {

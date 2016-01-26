@@ -31,7 +31,7 @@ function create(__helpers) {
               "layout": __layoutHelper
             },
             function(out) {
-              out.w('<form id="signupForm" action="/register" method="post">First Name: <input type="text" name="firstname" label="FirstName" placeholder="Enter your first name"> Last Name: <input type="text" name="lastname" label="LastName" placeholder="Enter your last name"> User Name: <input type="text" name="username" label="User Name" placeholder="Enter your username"> Password: <input type="password" name="password" label="Password" placeholder="Your password"><input type="submit" value="Sign up"></form>');
+              out.w('<div><form id="signupForm" action="/register" method="post">First Name: <input type="text" name="firstname" label="FirstName" placeholder="Enter your first name"><br> Last Name: <input type="text" name="lastname" label="LastName" placeholder="Enter your last name"><br> User Name: <input type="text" name="username" label="User Name" placeholder="Enter your username"><br> Password: <input type="password" name="password" label="Password" placeholder="Your password"><br><input type="submit" value="Sign up"></form></div>');
             });
         },
         "*": {

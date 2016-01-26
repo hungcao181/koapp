@@ -32,6 +32,7 @@
                     if (body.token) {
                         localStorage.token = body.token;
                         document.cookie = 'user='+ body.token;
+                        window.location = '/karaoke';
                     }
                 }).fail(function (err) {
                     console.log('error! ', err);

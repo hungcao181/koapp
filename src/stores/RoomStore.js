@@ -24,7 +24,6 @@ let roomStore = assign({}, EventEmitter.prototype, {
         co(function *() {
             let response = yield coRequest(options);
             _rooms = JSON.parse(response.body);
-            console.log('loading data from server:', _rooms);
             this.emitChange();
         }.bind(this)).catch(function (err) {
                 console.log('err: ', err);
@@ -77,7 +76,6 @@ let roomStore = assign({}, EventEmitter.prototype, {
         this.emit(OK200_EVENT);
     },
     emitChange: function () {
-        console.log('emitting change');
         this.emit(CHANGE_EVENT);
     },
     addChangeListener: function (callback) {
@@ -114,5 +112,6 @@ roomStore.dispatchToken = AppDispatcher.register(function (action) {
         default:
         //nothing
     }
+
 }) 
 module.exports = roomStore;

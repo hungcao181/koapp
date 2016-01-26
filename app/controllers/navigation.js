@@ -53,6 +53,7 @@ module.exports = {
     },
     logout: function* (next) {
         this.cookies.set('user', null);
+        this.redirect('/');
     },
     signup: function* (next) {
         signupTpl.render({}, this.res)
@@ -73,8 +74,11 @@ module.exports = {
             message = 'congratualation!';
         } else {
             message = 'User already exist';
-        }        
-        this.body = message;
+            this.body = message;
+        }
+        let token = jwt.sign({username: newUser.username}, secret, {expiresInMinutes: 1440});        
+        this.cookies.set('user',token);
+        this.redirect('/karaoke');
     },
     authenticate: function* (next) {
         let body = yield parse.form(this);
