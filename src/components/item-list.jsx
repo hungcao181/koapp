@@ -11,16 +11,15 @@ let Button = require('react-bootstrap/lib/Button');
 let ButtonGroup = require('react-bootstrap/lib/ButtonGroup');
 
 var AppActions = require('../actions/AppActions');
-var RoomStore = require('../stores/RoomStore');
+// var store = require('../stores/store');
 var QuickView = require('./RoomQuickView');
 var QuickAdd = require('./RoomQuickAdd');
 
 var endPoint = '/rooms';
-var Room = require('./RoomListItem.jsx');
 
 let co = require('co');
 let coRequest = require('co-request');
-let data;
+let data, store;
 
 let options = {
     url: window.location.origin + endPoint,
@@ -29,17 +28,18 @@ let options = {
 
 var ItemList = React.createClass({
     getInitialState: function () {
-        RoomStore.loadDataFromServer();
+        store = this.props.store;
+        store.loadDataFromServer();
         return {data: []};
     },
     componentDidMount: function () {
-        RoomStore.addChangeListener(this._onChange);
+        store.addChangeListener(this._onChange);
     },
     componentWillUnmount: function () {
-        RoomStore.removeChangeListener(this._onChange);
+        store.removeChangeListener(this._onChange);
     },
     _onChange: function () {
-        let data = RoomStore.getAll();
+        let data = store.getAll();
         this.setState({data: data});
     },
     _onQuickView: function (item) {
@@ -51,21 +51,22 @@ var ItemList = React.createClass({
         let actionsNode = document.getElementById('actions-section');
         ReactDOM.unmountComponentAtNode(actionsNode);
         ReactDOM.render(<QuickAdd/>, document.getElementById('actions-section'));
-        RoomStore.addOK200Listener(this._onOK200);
+        store.addOK200Listener(this._onOK200);
     },
     _onOK200: function () {
         let actionsNode = document.getElementById('actions-section');
         ReactDOM.unmountComponentAtNode(actionsNode);
-        RoomStore.removeOK200Listener(this._onOK200);
+        store.removeOK200Listener(this._onOK200);
         console.log('OK200');
     },
     render: function () {
         data = this.state.data;
+        let ItemComp = this.props.ItemComp;
         let onQuickViewFn = this._onQuickView;
         var ItemNodes = data.map(function(item) {    
             return (
-                <Room  key={item._id} item={item} onQuickView={onQuickViewFn}>
-                </Room>
+                <ItemComp  key={item._id} item={item} onQuickView={onQuickViewFn}>
+                </ItemComp>
             )
         });
         

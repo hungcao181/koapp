@@ -33,6 +33,15 @@ function create(__helpers) {
             function(out) {
               out.w('Hello world!');
             });
+          __tag(out,
+            ______node_modules_marko_layout_put_tag_js,
+            {
+              "into": "script",
+              "layout": __layoutHelper
+            },
+            function(out) {
+              out.w('<script src="js/main.js"></script>');
+            });
         },
         "*": {
           "showHeader": true

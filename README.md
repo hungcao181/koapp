@@ -8,7 +8,9 @@ Build a koa app from scratch
 6) Integrate Front-end framework: (done)
 React http://facebook.github.io/react/docs/tutorial.html
 bootstrap http://getbootstrap.com/components/
-7) load rooms from database
-try server side rendering
+7) load rooms from database (done)
+8) try server side rendering
 try out https://github.com/GriddleGriddle/Griddle
-try out https://github.com/rackt/react-router
+9) try out https://github.com/rackt/react-router
+10) Token Base Authenticate (done)
+

@@ -96941,7 +96941,7 @@ var AppActions = {
 
 module.exports = AppActions;
 
-},{"../constants/AppConstants":746,"../dispatcher/AppDispatcher":747}],741:[function(require,module,exports){
+},{"../constants/AppConstants":747,"../dispatcher/AppDispatcher":748}],741:[function(require,module,exports){
 'use strict';
 'use restrict';
 
@@ -96988,7 +96988,6 @@ var ItemList = React.createClass({
     },
     _onChange: function _onChange() {
         var data = RoomStore.getAll();
-        console.log('data on change', data);
         this.setState({ data: data });
     },
     _onQuickView: function _onQuickView(item) {
@@ -97034,7 +97033,7 @@ var ItemList = React.createClass({
 
 module.exports = ItemList;
 
-},{"../actions/AppActions":740,"../stores/RoomStore":749,"./RoomListItem.jsx":742,"./RoomQuickAdd":743,"./RoomQuickView":744,"co":78,"co-request":77,"react":648,"react-bootstrap/lib/Button":418,"react-bootstrap/lib/ButtonGroup":419,"react-bootstrap/lib/ButtonInput":420,"react-bootstrap/lib/Col":424,"react-bootstrap/lib/Grid":436,"react-bootstrap/lib/Image":437,"react-bootstrap/lib/Input":438,"react-bootstrap/lib/Row":473,"react-dom":495}],742:[function(require,module,exports){
+},{"../actions/AppActions":740,"../stores/RoomStore":750,"./RoomListItem.jsx":742,"./RoomQuickAdd":743,"./RoomQuickView":744,"co":78,"co-request":77,"react":648,"react-bootstrap/lib/Button":418,"react-bootstrap/lib/ButtonGroup":419,"react-bootstrap/lib/ButtonInput":420,"react-bootstrap/lib/Col":424,"react-bootstrap/lib/Grid":436,"react-bootstrap/lib/Image":437,"react-bootstrap/lib/Input":438,"react-bootstrap/lib/Row":473,"react-dom":495}],742:[function(require,module,exports){
 'use strict';
 
 var _lib = require('react-bootstrap/lib');
@@ -97433,6 +97432,100 @@ module.exports = buttonGroupInstance;
 
 },{"react":648,"react-bootstrap/lib":484}],746:[function(require,module,exports){
 'use strict';
+'use restrict';
+
+var React = require('react');
+var ReactDOM = require('react-dom');
+var Image = require('react-bootstrap/lib/Image');
+var Grid = require('react-bootstrap/lib/Grid');
+var Row = require('react-bootstrap/lib/Row');
+var Col = require('react-bootstrap/lib/Col');
+var Input = require('react-bootstrap/lib/Input');
+var ButtonInput = require('react-bootstrap/lib/ButtonInput');
+var Button = require('react-bootstrap/lib/Button');
+var ButtonGroup = require('react-bootstrap/lib/ButtonGroup');
+
+var AppActions = require('../actions/AppActions');
+// var store = require('../stores/store');
+var QuickView = require('./RoomQuickView');
+var QuickAdd = require('./RoomQuickAdd');
+
+var endPoint = '/rooms';
+
+var co = require('co');
+var coRequest = require('co-request');
+var data = undefined,
+    store = undefined;
+
+var options = {
+    url: window.location.origin + endPoint,
+    method: 'get'
+};
+
+var ItemList = React.createClass({
+    displayName: 'ItemList',
+
+    getInitialState: function getInitialState() {
+        store = this.props.store;
+        store.loadDataFromServer();
+        return { data: [] };
+    },
+    componentDidMount: function componentDidMount() {
+        store.addChangeListener(this._onChange);
+    },
+    componentWillUnmount: function componentWillUnmount() {
+        store.removeChangeListener(this._onChange);
+    },
+    _onChange: function _onChange() {
+        var data = store.getAll();
+        this.setState({ data: data });
+    },
+    _onQuickView: function _onQuickView(item) {
+        var actionsNode = document.getElementById('actions-section');
+        ReactDOM.unmountComponentAtNode(actionsNode);
+        ReactDOM.render(React.createElement(QuickView, { data: item }), document.getElementById('actions-section'));
+    },
+    _onAdd: function _onAdd() {
+        var actionsNode = document.getElementById('actions-section');
+        ReactDOM.unmountComponentAtNode(actionsNode);
+        ReactDOM.render(React.createElement(QuickAdd, null), document.getElementById('actions-section'));
+        store.addOK200Listener(this._onOK200);
+    },
+    _onOK200: function _onOK200() {
+        var actionsNode = document.getElementById('actions-section');
+        ReactDOM.unmountComponentAtNode(actionsNode);
+        store.removeOK200Listener(this._onOK200);
+        console.log('OK200');
+    },
+    render: function render() {
+        data = this.state.data;
+        var ItemComp = this.props.ItemComp;
+        var onQuickViewFn = this._onQuickView;
+        var ItemNodes = data.map(function (item) {
+            return React.createElement(ItemComp, { key: item._id, item: item, onQuickView: onQuickViewFn });
+        });
+
+        return React.createElement(
+            'div',
+            { className: 'items rooms' },
+            React.createElement(
+                ButtonGroup,
+                null,
+                React.createElement(
+                    ButtonInput,
+                    { onClick: this._onAdd },
+                    'Add'
+                )
+            ),
+            ItemNodes
+        );
+    }
+});
+
+module.exports = ItemList;
+
+},{"../actions/AppActions":740,"./RoomQuickAdd":743,"./RoomQuickView":744,"co":78,"co-request":77,"react":648,"react-bootstrap/lib/Button":418,"react-bootstrap/lib/ButtonGroup":419,"react-bootstrap/lib/ButtonInput":420,"react-bootstrap/lib/Col":424,"react-bootstrap/lib/Grid":436,"react-bootstrap/lib/Image":437,"react-bootstrap/lib/Input":438,"react-bootstrap/lib/Row":473,"react-dom":495}],747:[function(require,module,exports){
+'use strict';
 
 var keyMirror = require('keymirror');
 
@@ -97447,7 +97540,7 @@ module.exports = {
 
 };
 
-},{"keymirror":304}],747:[function(require,module,exports){
+},{"keymirror":304}],748:[function(require,module,exports){
 'use strict';
 
 var Dispatcher = require('flux').Dispatcher;
@@ -97464,13 +97557,9 @@ var AppDispatcher = assign(new Dispatcher(), {
 
 module.exports = AppDispatcher;
 
-},{"flux":247,"object-assign":381}],748:[function(require,module,exports){
+},{"flux":247,"object-assign":381}],749:[function(require,module,exports){
 'use strict';
 'use restrict';
-
-var _regenerator = require('babel-runtime/regenerator');
-
-var _regenerator2 = _interopRequireDefault(_regenerator);
 
 var _react = require('react');
 
@@ -97480,69 +97569,15 @@ var _reactDom = require('react-dom');
 
 var _reactDom2 = _interopRequireDefault(_reactDom);
 
-var _co = require('co');
-
-var _co2 = _interopRequireDefault(_co);
-
-var _coRequest = require('co-request');
-
-var _coRequest2 = _interopRequireDefault(_coRequest);
-
-var _request = require('request');
-
-var _request2 = _interopRequireDefault(_request);
-
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-// import {ItemList} from './components/RoomListItem.jsx';
-var ItemList = require('./components/RoomList.jsx');
+var Room = require('./components/RoomListItem');
+var ItemList = require('./components/item-list');
+var RoomList = require('./components/RoomList');
+var RoomStore = require('./stores/RoomStore');
+_reactDom2.default.render(_react2.default.createElement(ItemList, { ItemComp: Room, store: RoomStore }), document.getElementById('rooms'));
 
-var roomData;
-// roomData = require('./stores/data');
-
-var options = {
-    url: 'http://localhost:3000/rooms',
-    method: 'get'
-};
-
-var use = { request: false, coRequest: false };
-
-if (use.request) {
-    (0, _request2.default)(options, function (err, response, body) {
-        roomData = JSON.parse(body);
-        // console.log('body',roomData);
-        _reactDom2.default.render(_react2.default.createElement(ItemList, { data: roomData }), document.getElementById('rooms'));
-    });
-} else if (use.coRequest) {
-    (0, _co2.default)(_regenerator2.default.mark(function _callee() {
-        var response;
-        return _regenerator2.default.wrap(function _callee$(_context) {
-            while (1) {
-                switch (_context.prev = _context.next) {
-                    case 0:
-                        _context.next = 2;
-                        return (0, _coRequest2.default)(options);
-
-                    case 2:
-                        response = _context.sent;
-
-                        roomData = JSON.parse(response.body);
-                        _reactDom2.default.render(_react2.default.createElement(ItemList, { data: roomData }), document.getElementById('rooms'));
-
-                    case 5:
-                    case 'end':
-                        return _context.stop();
-                }
-            }
-        }, _callee, this);
-    })).catch(function (err) {
-        console.log(err);
-    });
-} else {
-    _reactDom2.default.render(_react2.default.createElement(ItemList, { data: roomData }), document.getElementById('rooms'));
-}
-
-},{"./components/RoomList.jsx":741,"babel-runtime/regenerator":30,"co":78,"co-request":77,"react":648,"react-dom":495,"request":659}],749:[function(require,module,exports){
+},{"./components/RoomList":741,"./components/RoomListItem":742,"./components/item-list":746,"./stores/RoomStore":750,"react":648,"react-dom":495}],750:[function(require,module,exports){
 'use strict';
 
 var _stringify = require('babel-runtime/core-js/json/stringify');
@@ -97687,7 +97722,7 @@ roomStore.dispatchToken = AppDispatcher.register(function (action) {
 });
 module.exports = roomStore;
 
-},{"../constants/AppConstants":746,"../dispatcher/AppDispatcher":747,"babel-runtime/core-js/json/stringify":17,"babel-runtime/regenerator":30,"co":78,"co-request":77,"events":217,"object-assign":381,"request":659}]},{},[748])
+},{"../constants/AppConstants":747,"../dispatcher/AppDispatcher":748,"babel-runtime/core-js/json/stringify":17,"babel-runtime/regenerator":30,"co":78,"co-request":77,"events":217,"object-assign":381,"request":659}]},{},[749])
 
 
 //# sourceMappingURL=main.js.map
