@@ -10,8 +10,6 @@ let ButtonInput = require('react-bootstrap/lib/ButtonInput');
 let Button = require('react-bootstrap/lib/Button');
 let ButtonGroup = require('react-bootstrap/lib/ButtonGroup');
 
-var AppActions = require('../actions/AppActions');
-// var store = require('../stores/store');
 var QuickView = require('./RoomQuickView');
 var QuickAdd = require('./RoomQuickAdd');
 
@@ -72,9 +70,6 @@ var ItemList = React.createClass({
         
         return (
             <div className = "items rooms">
-                <ButtonGroup>
-                    <ButtonInput onClick={this._onAdd}>Add</ButtonInput>
-                </ButtonGroup>
                 {ItemNodes}
             </div>
         );        

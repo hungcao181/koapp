@@ -41,16 +41,16 @@ var QuickView = React.createClass({
 
             <Modal show={this.state.showModal} onHide={this.close}>
                 <Modal.Header closeButton>
-                <Modal.Title>Modal heading</Modal.Title>
+                <Modal.Title>{data.title}</Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
                 <Grid>
                     <Row>
-                        <Col xs={0} md={0}>
-                            <Image src={data.image} alt={data.title} ></Image>
+                        <Col xs={4} md={4}>
+                            <Image src={data.image} alt='Product image' responsive></Image>
                             <figcaption>{data.title}</figcaption>
                         </Col>
-                        <Col xs={12} md={12}>
+                        <Col xs={6} md={6}>
                             <ul>
                                 <li>{data.description}</li>
                                 <li>price: {data.price}</li>

@@ -96941,7 +96941,72 @@ var AppActions = {
 
 module.exports = AppActions;
 
-},{"../constants/AppConstants":747,"../dispatcher/AppDispatcher":748}],741:[function(require,module,exports){
+},{"../constants/AppConstants":748,"../dispatcher/AppDispatcher":749}],741:[function(require,module,exports){
+'use strict';
+
+var _lib = require('react-bootstrap/lib');
+
+var React = require('react');
+var url = '/rooms/';
+var appActions = require('../actions/AppActions');
+
+var Item = React.createClass({
+    displayName: 'Item',
+
+    render: function render() {
+
+        return React.createElement(
+            'div',
+            { className: 'item room' },
+            React.createElement(
+                'div',
+                null,
+                React.createElement(
+                    'div',
+                    { className: 'row' },
+                    React.createElement(
+                        'a',
+                        { href: url.concat(this.props.item._id) },
+                        React.createElement(_lib.Image, { src: this.props.item.image, alt: 'Product image', width: '304', height: '228', responsive: true }),
+                        React.createElement(
+                            'h3',
+                            null,
+                            this.props.item.title
+                        )
+                    )
+                )
+            ),
+            React.createElement(
+                'div',
+                { className: 'row' },
+                React.createElement(
+                    _lib.ButtonGroup,
+                    null,
+                    React.createElement(
+                        _lib.Button,
+                        { bsStyle: 'info', onClick: this._onQuickView },
+                        'Quick view'
+                    ),
+                    React.createElement(
+                        _lib.Button,
+                        { bsStyle: 'success', onClick: this._onAddToCart },
+                        'Add to cart'
+                    )
+                )
+            )
+        );
+    },
+    _onQuickView: function _onQuickView(evt) {
+        this.props.onQuickView(this.props.item);
+    },
+    _onAddToCart: function _onAddToCart(evt) {
+        this.props.onQuickView(this.props.item);
+    }
+});
+
+module.exports = Item;
+
+},{"../actions/AppActions":740,"react":648,"react-bootstrap/lib":484}],742:[function(require,module,exports){
 'use strict';
 'use restrict';
 
@@ -97033,7 +97098,7 @@ var ItemList = React.createClass({
 
 module.exports = ItemList;
 
-},{"../actions/AppActions":740,"../stores/RoomStore":750,"./RoomListItem.jsx":742,"./RoomQuickAdd":743,"./RoomQuickView":744,"co":78,"co-request":77,"react":648,"react-bootstrap/lib/Button":418,"react-bootstrap/lib/ButtonGroup":419,"react-bootstrap/lib/ButtonInput":420,"react-bootstrap/lib/Col":424,"react-bootstrap/lib/Grid":436,"react-bootstrap/lib/Image":437,"react-bootstrap/lib/Input":438,"react-bootstrap/lib/Row":473,"react-dom":495}],742:[function(require,module,exports){
+},{"../actions/AppActions":740,"../stores/RoomStore":751,"./RoomListItem.jsx":743,"./RoomQuickAdd":744,"./RoomQuickView":745,"co":78,"co-request":77,"react":648,"react-bootstrap/lib/Button":418,"react-bootstrap/lib/ButtonGroup":419,"react-bootstrap/lib/ButtonInput":420,"react-bootstrap/lib/Col":424,"react-bootstrap/lib/Grid":436,"react-bootstrap/lib/Image":437,"react-bootstrap/lib/Input":438,"react-bootstrap/lib/Row":473,"react-dom":495}],743:[function(require,module,exports){
 'use strict';
 
 var _lib = require('react-bootstrap/lib');
@@ -97126,7 +97191,7 @@ var Room = React.createClass({
 
 module.exports = Room;
 
-},{"../actions/AppActions":740,"./item-block-buttons":745,"react":648,"react-bootstrap/lib":484}],743:[function(require,module,exports){
+},{"../actions/AppActions":740,"./item-block-buttons":746,"react":648,"react-bootstrap/lib":484}],744:[function(require,module,exports){
 'use strict';
 
 var fs = require('fs');
@@ -97240,7 +97305,7 @@ var QuickAdd = React.createClass({
 
 module.exports = QuickAdd;
 
-},{"../actions/AppActions":740,"fs":62,"react":648,"react-bootstrap/lib/Button":418,"react-bootstrap/lib/ButtonInput":420,"react-bootstrap/lib/ButtonToolbar":421,"react-bootstrap/lib/Col":424,"react-bootstrap/lib/Image":437,"react-bootstrap/lib/Input":438,"react-bootstrap/lib/Modal":446,"react-bootstrap/lib/OverlayTrigger":462,"react-bootstrap/lib/Popover":470,"react-bootstrap/lib/Row":473,"react-bootstrap/lib/Tooltip":481,"react-dom":495}],744:[function(require,module,exports){
+},{"../actions/AppActions":740,"fs":62,"react":648,"react-bootstrap/lib/Button":418,"react-bootstrap/lib/ButtonInput":420,"react-bootstrap/lib/ButtonToolbar":421,"react-bootstrap/lib/Col":424,"react-bootstrap/lib/Image":437,"react-bootstrap/lib/Input":438,"react-bootstrap/lib/Modal":446,"react-bootstrap/lib/OverlayTrigger":462,"react-bootstrap/lib/Popover":470,"react-bootstrap/lib/Row":473,"react-bootstrap/lib/Tooltip":481,"react-dom":495}],745:[function(require,module,exports){
 'use strict';
 
 var React = require('react');
@@ -97296,7 +97361,7 @@ var QuickView = React.createClass({
                     React.createElement(
                         Modal.Title,
                         null,
-                        'Modal heading'
+                        data.title
                     )
                 ),
                 React.createElement(
@@ -97310,8 +97375,8 @@ var QuickView = React.createClass({
                             null,
                             React.createElement(
                                 Col,
-                                { xs: 0, md: 0 },
-                                React.createElement(Image, { src: data.image, alt: data.title }),
+                                { xs: 4, md: 4 },
+                                React.createElement(Image, { src: data.image, alt: 'Product image', responsive: true }),
                                 React.createElement(
                                     'figcaption',
                                     null,
@@ -97320,7 +97385,7 @@ var QuickView = React.createClass({
                             ),
                             React.createElement(
                                 Col,
-                                { xs: 12, md: 12 },
+                                { xs: 6, md: 6 },
                                 React.createElement(
                                     'ul',
                                     null,
@@ -97385,7 +97450,7 @@ var QuickView = React.createClass({
 });
 module.exports = QuickView;
 
-},{"react":648,"react-bootstrap/lib/Button":418,"react-bootstrap/lib/Col":424,"react-bootstrap/lib/Grid":436,"react-bootstrap/lib/Image":437,"react-bootstrap/lib/Modal":446,"react-bootstrap/lib/OverlayTrigger":462,"react-bootstrap/lib/Popover":470,"react-bootstrap/lib/Row":473,"react-bootstrap/lib/Tooltip":481,"react-dom":495}],745:[function(require,module,exports){
+},{"react":648,"react-bootstrap/lib/Button":418,"react-bootstrap/lib/Col":424,"react-bootstrap/lib/Grid":436,"react-bootstrap/lib/Image":437,"react-bootstrap/lib/Modal":446,"react-bootstrap/lib/OverlayTrigger":462,"react-bootstrap/lib/Popover":470,"react-bootstrap/lib/Row":473,"react-bootstrap/lib/Tooltip":481,"react-dom":495}],746:[function(require,module,exports){
 'use strict';
 
 var _react = require('react');
@@ -97430,7 +97495,7 @@ var buttonGroupInstance = _react2.default.createElement(
 );
 module.exports = buttonGroupInstance;
 
-},{"react":648,"react-bootstrap/lib":484}],746:[function(require,module,exports){
+},{"react":648,"react-bootstrap/lib":484}],747:[function(require,module,exports){
 'use strict';
 'use restrict';
 
@@ -97445,8 +97510,6 @@ var ButtonInput = require('react-bootstrap/lib/ButtonInput');
 var Button = require('react-bootstrap/lib/Button');
 var ButtonGroup = require('react-bootstrap/lib/ButtonGroup');
 
-var AppActions = require('../actions/AppActions');
-// var store = require('../stores/store');
 var QuickView = require('./RoomQuickView');
 var QuickAdd = require('./RoomQuickAdd');
 
@@ -97508,15 +97571,6 @@ var ItemList = React.createClass({
         return React.createElement(
             'div',
             { className: 'items rooms' },
-            React.createElement(
-                ButtonGroup,
-                null,
-                React.createElement(
-                    ButtonInput,
-                    { onClick: this._onAdd },
-                    'Add'
-                )
-            ),
             ItemNodes
         );
     }
@@ -97524,7 +97578,7 @@ var ItemList = React.createClass({
 
 module.exports = ItemList;
 
-},{"../actions/AppActions":740,"./RoomQuickAdd":743,"./RoomQuickView":744,"co":78,"co-request":77,"react":648,"react-bootstrap/lib/Button":418,"react-bootstrap/lib/ButtonGroup":419,"react-bootstrap/lib/ButtonInput":420,"react-bootstrap/lib/Col":424,"react-bootstrap/lib/Grid":436,"react-bootstrap/lib/Image":437,"react-bootstrap/lib/Input":438,"react-bootstrap/lib/Row":473,"react-dom":495}],747:[function(require,module,exports){
+},{"./RoomQuickAdd":744,"./RoomQuickView":745,"co":78,"co-request":77,"react":648,"react-bootstrap/lib/Button":418,"react-bootstrap/lib/ButtonGroup":419,"react-bootstrap/lib/ButtonInput":420,"react-bootstrap/lib/Col":424,"react-bootstrap/lib/Grid":436,"react-bootstrap/lib/Image":437,"react-bootstrap/lib/Input":438,"react-bootstrap/lib/Row":473,"react-dom":495}],748:[function(require,module,exports){
 'use strict';
 
 var keyMirror = require('keymirror');
@@ -97540,7 +97594,7 @@ module.exports = {
 
 };
 
-},{"keymirror":304}],748:[function(require,module,exports){
+},{"keymirror":304}],749:[function(require,module,exports){
 'use strict';
 
 var Dispatcher = require('flux').Dispatcher;
@@ -97557,7 +97611,7 @@ var AppDispatcher = assign(new Dispatcher(), {
 
 module.exports = AppDispatcher;
 
-},{"flux":247,"object-assign":381}],749:[function(require,module,exports){
+},{"flux":247,"object-assign":381}],750:[function(require,module,exports){
 'use strict';
 'use restrict';
 
@@ -97572,12 +97626,13 @@ var _reactDom2 = _interopRequireDefault(_reactDom);
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 var Room = require('./components/RoomListItem');
+var Item = require('./components/Item');
 var ItemList = require('./components/item-list');
 var RoomList = require('./components/RoomList');
 var RoomStore = require('./stores/RoomStore');
-_reactDom2.default.render(_react2.default.createElement(ItemList, { ItemComp: Room, store: RoomStore }), document.getElementById('rooms'));
+_reactDom2.default.render(_react2.default.createElement(ItemList, { ItemComp: Item, store: RoomStore }), document.getElementById('rooms'));
 
-},{"./components/RoomList":741,"./components/RoomListItem":742,"./components/item-list":746,"./stores/RoomStore":750,"react":648,"react-dom":495}],750:[function(require,module,exports){
+},{"./components/Item":741,"./components/RoomList":742,"./components/RoomListItem":743,"./components/item-list":747,"./stores/RoomStore":751,"react":648,"react-dom":495}],751:[function(require,module,exports){
 'use strict';
 
 var _stringify = require('babel-runtime/core-js/json/stringify');
@@ -97722,7 +97777,7 @@ roomStore.dispatchToken = AppDispatcher.register(function (action) {
 });
 module.exports = roomStore;
 
-},{"../constants/AppConstants":747,"../dispatcher/AppDispatcher":748,"babel-runtime/core-js/json/stringify":17,"babel-runtime/regenerator":30,"co":78,"co-request":77,"events":217,"object-assign":381,"request":659}]},{},[749])
+},{"../constants/AppConstants":748,"../dispatcher/AppDispatcher":749,"babel-runtime/core-js/json/stringify":17,"babel-runtime/regenerator":30,"co":78,"co-request":77,"events":217,"object-assign":381,"request":659}]},{},[750])
 
 
 //# sourceMappingURL=main.js.map
