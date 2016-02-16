@@ -17,20 +17,20 @@ app.use(function* (next) {
     console.log('%s %s - %s', this.method, this.url, ms);
 });
 
-app.use(function* (next) {
-    let token = this.cookies.get('user'); // this.get('x-access-token');
+// app.use(function* (next) {
+//     let token = this.cookies.get('user'); // this.get('x-access-token');
     
-    console.log('token ${secret} ', token);
-    if (token) {
-        let decodedToken = yield jwt.verify(token, secret);
-        console.log('decoded ', decodedToken);
-        if (decodedToken.username) {
-            this.state.user = decodedToken;
-            // this.req.isAuthenticated = true;
-        };
-    }
-    yield next;
-});
+//     console.log('token ${secret} ', token);
+//     if (token) {
+//         let decodedToken = yield jwt.verify(token, secret);
+//         console.log('decoded ', decodedToken);
+//         if (decodedToken.username) {
+//             this.state.user = decodedToken;
+//             // this.req.isAuthenticated = true;
+//         };
+//     }
+//     yield next;
+// });
 
 // without passthrough: true, middleware below this line will be only reached if JWT token is valid
 // unless the URL starts with '/public': //.unless({ path: [/^\/public/] })

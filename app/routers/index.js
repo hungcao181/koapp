@@ -15,7 +15,7 @@ function isAuth() {
 router.get('/', navigation.home);
 router.get('/about', navigation.about);
 router.get('/profile', navigation.profile);
-router.get('/karaoke', isAuth(), navigation.karaoke);
+router.get('/karaoke', navigation.karaoke);
 router.get('/login', navigation.login);
 router.get('/logout', navigation.logout);
 router.get('/signup', navigation.signup);
@@ -31,7 +31,7 @@ router.del('/comments/:id', comments.delete);
 
 //rooms
 let rooms = require('../controllers/rooms.js');
-router.get('/rooms', isAuth(), rooms.list);
+router.get('/rooms', rooms.list);
 router.post('/rooms', rooms.addwithMedia);
 router.get('/rooms/:id', rooms.show);
 router.delete('/rooms/:id', rooms.delete);

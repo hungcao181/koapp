@@ -25,13 +25,13 @@ var Item = React.createClass({
                     </ButtonGroup>
                 </div>
             </div>
-            )
+            );
     },
     _onQuickView: function (evt) {
         this.props.onQuickView(this.props.item);
     },
     _onAddToCart: function (evt) {
-        this.props.onQuickView(this.props.item);
+        this.props.onAddToCart(this.props.item);
     }
 });
 

@@ -96944,6 +96944,62 @@ module.exports = AppActions;
 },{"../constants/AppConstants":748,"../dispatcher/AppDispatcher":749}],741:[function(require,module,exports){
 'use strict';
 
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+var AppDispatcher = require('../dispatcher/AppDispatcher');
+var FluxCartConstants = require('../constants/AppConstants').CartActionTypes;
+// Define actions object
+var FluxCartActions = {
+
+  // Receive inital product data
+
+  receiveProduct: function receiveProduct(data) {
+    AppDispatcher.handleAction({
+      actionType: FluxCartConstants.RECEIVE_DATA,
+      data: data
+    });
+  },
+
+  // Set currently selected product variation
+  selectProduct: function selectProduct(index) {
+    AppDispatcher.handleAction({
+      actionType: FluxCartConstants.SELECT_PRODUCT,
+      data: index
+    });
+  },
+
+  // Add item to cart
+  addToCart: function addToCart(sku, update) {
+    AppDispatcher.handleAction({
+      actionType: FluxCartConstants.CART_ADD,
+      sku: sku,
+      update: update
+    });
+  },
+
+  // Remove item from cart
+  removeFromCart: function removeFromCart(sku) {
+    AppDispatcher.handleAction({
+      actionType: FluxCartConstants.CART_REMOVE,
+      sku: sku
+    });
+  },
+
+  // Update cart visibility status
+  updateCartVisible: function updateCartVisible(cartVisible) {
+    AppDispatcher.handleAction({
+      actionType: FluxCartConstants.CART_VISIBLE,
+      cartVisible: cartVisible
+    });
+  }
+};
+
+exports.default = FluxCartActions;
+
+},{"../constants/AppConstants":748,"../dispatcher/AppDispatcher":749}],742:[function(require,module,exports){
+'use strict';
+
 var _lib = require('react-bootstrap/lib');
 
 var React = require('react');
@@ -97000,105 +97056,13 @@ var Item = React.createClass({
         this.props.onQuickView(this.props.item);
     },
     _onAddToCart: function _onAddToCart(evt) {
-        this.props.onQuickView(this.props.item);
+        this.props.onAddToCart(this.props.item);
     }
 });
 
 module.exports = Item;
 
-},{"../actions/AppActions":740,"react":648,"react-bootstrap/lib":484}],742:[function(require,module,exports){
-'use strict';
-'use restrict';
-
-var React = require('react');
-var ReactDOM = require('react-dom');
-var Image = require('react-bootstrap/lib/Image');
-var Grid = require('react-bootstrap/lib/Grid');
-var Row = require('react-bootstrap/lib/Row');
-var Col = require('react-bootstrap/lib/Col');
-var Input = require('react-bootstrap/lib/Input');
-var ButtonInput = require('react-bootstrap/lib/ButtonInput');
-var Button = require('react-bootstrap/lib/Button');
-var ButtonGroup = require('react-bootstrap/lib/ButtonGroup');
-
-var AppActions = require('../actions/AppActions');
-var RoomStore = require('../stores/RoomStore');
-var QuickView = require('./RoomQuickView');
-var QuickAdd = require('./RoomQuickAdd');
-
-var endPoint = '/rooms';
-var Room = require('./RoomListItem.jsx');
-
-var co = require('co');
-var coRequest = require('co-request');
-var data = undefined;
-
-var options = {
-    url: window.location.origin + endPoint,
-    method: 'get'
-};
-
-var ItemList = React.createClass({
-    displayName: 'ItemList',
-
-    getInitialState: function getInitialState() {
-        RoomStore.loadDataFromServer();
-        return { data: [] };
-    },
-    componentDidMount: function componentDidMount() {
-        RoomStore.addChangeListener(this._onChange);
-    },
-    componentWillUnmount: function componentWillUnmount() {
-        RoomStore.removeChangeListener(this._onChange);
-    },
-    _onChange: function _onChange() {
-        var data = RoomStore.getAll();
-        this.setState({ data: data });
-    },
-    _onQuickView: function _onQuickView(item) {
-        var actionsNode = document.getElementById('actions-section');
-        ReactDOM.unmountComponentAtNode(actionsNode);
-        ReactDOM.render(React.createElement(QuickView, { data: item }), document.getElementById('actions-section'));
-    },
-    _onAdd: function _onAdd() {
-        var actionsNode = document.getElementById('actions-section');
-        ReactDOM.unmountComponentAtNode(actionsNode);
-        ReactDOM.render(React.createElement(QuickAdd, null), document.getElementById('actions-section'));
-        RoomStore.addOK200Listener(this._onOK200);
-    },
-    _onOK200: function _onOK200() {
-        var actionsNode = document.getElementById('actions-section');
-        ReactDOM.unmountComponentAtNode(actionsNode);
-        RoomStore.removeOK200Listener(this._onOK200);
-        console.log('OK200');
-    },
-    render: function render() {
-        data = this.state.data;
-        var onQuickViewFn = this._onQuickView;
-        var ItemNodes = data.map(function (item) {
-            return React.createElement(Room, { key: item._id, item: item, onQuickView: onQuickViewFn });
-        });
-
-        return React.createElement(
-            'div',
-            { className: 'items rooms' },
-            React.createElement(
-                ButtonGroup,
-                null,
-                React.createElement(
-                    ButtonInput,
-                    { onClick: this._onAdd },
-                    'Add'
-                )
-            ),
-            ItemNodes
-        );
-    }
-});
-
-module.exports = ItemList;
-
-},{"../actions/AppActions":740,"../stores/RoomStore":751,"./RoomListItem.jsx":743,"./RoomQuickAdd":744,"./RoomQuickView":745,"co":78,"co-request":77,"react":648,"react-bootstrap/lib/Button":418,"react-bootstrap/lib/ButtonGroup":419,"react-bootstrap/lib/ButtonInput":420,"react-bootstrap/lib/Col":424,"react-bootstrap/lib/Grid":436,"react-bootstrap/lib/Image":437,"react-bootstrap/lib/Input":438,"react-bootstrap/lib/Row":473,"react-dom":495}],743:[function(require,module,exports){
+},{"../actions/AppActions":740,"react":648,"react-bootstrap/lib":484}],743:[function(require,module,exports){
 'use strict';
 
 var _lib = require('react-bootstrap/lib');
@@ -97192,120 +97156,6 @@ var Room = React.createClass({
 module.exports = Room;
 
 },{"../actions/AppActions":740,"./item-block-buttons":746,"react":648,"react-bootstrap/lib":484}],744:[function(require,module,exports){
-'use strict';
-
-var fs = require('fs');
-var React = require('react');
-var ReactDOM = require('react-dom');
-var Modal = require('react-bootstrap/lib/Modal');
-var Popover = require('react-bootstrap/lib/Popover');
-var Tooltip = require('react-bootstrap/lib/Tooltip');
-var Image = require('react-bootstrap/lib/Image');
-// let Grid = require('react-bootstrap/lib/Grid');
-var Row = require('react-bootstrap/lib/Row');
-var Col = require('react-bootstrap/lib/Col');
-var Input = require('react-bootstrap/lib/Input');
-var ButtonInput = require('react-bootstrap/lib/ButtonInput');
-var Button = require('react-bootstrap/lib/Button');
-var ButtonToolbar = require('react-bootstrap/lib/ButtonToolbar');
-var OverlayTrigger = require('react-bootstrap/lib/OverlayTrigger');
-
-var AppActions = require('../actions/AppActions');
-
-var QuickAdd = React.createClass({
-    displayName: 'QuickAdd',
-    getInitialState: function getInitialState() {
-        return { showModal: true, data: {} };
-    },
-    close: function close() {
-        this.setState({ showModal: false });
-    },
-    open: function open() {
-        this.setState({ showModal: true });
-    },
-    _onSaveAdd: function _onSaveAdd(evt) {
-        // evt.preventDefault();
-        // let form = evt.target.closest('form');
-        evt.preventDefault();
-        var form = document.getElementById('RoomQuickAdd');
-        var formData = new FormData(form);
-        AppActions.addData(formData);
-        form.reset();
-    },
-    _onSave: function _onSave(evt) {
-        evt.preventDefault();
-        var form = document.getElementById('RoomQuickAdd');
-        var formData = new FormData(form);
-        AppActions.addData(formData);
-        this.setState({ showModal: false });
-    },
-    _onSubmit: function _onSubmit(evt) {
-        evt.preventDefault();
-        var formData = new FormData(evt.target);
-        AppActions.addData(formData);
-        this.setState({ showModal: false });
-    },
-    render: function render() {
-        var data = this.props.data;
-        return React.createElement(
-            'div',
-            null,
-            React.createElement(
-                'p',
-                null,
-                'Click to get the full Modal experience!'
-            ),
-            React.createElement(
-                Modal,
-                { show: this.state.showModal, onHide: this.close },
-                React.createElement(
-                    Modal.Header,
-                    { closeButton: true },
-                    React.createElement(
-                        Modal.Title,
-                        null,
-                        'Adding room info'
-                    )
-                ),
-                React.createElement(
-                    Modal.Body,
-                    null,
-                    React.createElement(
-                        'form',
-                        { id: 'RoomQuickAdd', name: 'roomInfo', encType: 'multipart/form-data', method: 'post', onSubmit: this._onSubmit, className: 'form-horizontal' },
-                        React.createElement(Input, { type: 'text', name: 'title', label: 'Title', placeholder: 'Enter title', labelClassName: 'col-xs-2', wrapperClassName: 'col-xs-10' }),
-                        React.createElement(Input, { type: 'file', name: 'image', label: 'File', help: '[Optional] Block level help text', labelClassName: 'col-xs-2', wrapperClassName: 'col-xs-10' }),
-                        React.createElement(Input, { type: 'textarea', name: 'description', label: 'Description', placeholder: 'Enter description', labelClassName: 'col-xs-2', wrapperClassName: 'col-xs-10' }),
-                        React.createElement(Input, { type: 'text', name: 'price', label: 'Price', placeholder: 'Enter price', labelClassName: 'col-xs-2', wrapperClassName: 'col-xs-10' }),
-                        React.createElement(Input, { type: 'text', name: 'Min Amount', label: 'MinimumAmount', placeholder: 'Enter MinimumAmount', labelClassName: 'col-xs-2', wrapperClassName: 'col-xs-10' })
-                    )
-                ),
-                React.createElement(
-                    Modal.Footer,
-                    null,
-                    React.createElement(
-                        ButtonToolbar,
-                        { className: 'pull-right' },
-                        React.createElement(
-                            Button,
-                            { onClick: this._onSave, bsStyle: 'default' },
-                            'Save'
-                        ),
-                        React.createElement(
-                            Button,
-                            { onClick: this._onSaveAdd, bsStyle: 'primary' },
-                            'Save +'
-                        )
-                    )
-                )
-            )
-        );
-    }
-});
-
-module.exports = QuickAdd;
-
-},{"../actions/AppActions":740,"fs":62,"react":648,"react-bootstrap/lib/Button":418,"react-bootstrap/lib/ButtonInput":420,"react-bootstrap/lib/ButtonToolbar":421,"react-bootstrap/lib/Col":424,"react-bootstrap/lib/Image":437,"react-bootstrap/lib/Input":438,"react-bootstrap/lib/Modal":446,"react-bootstrap/lib/OverlayTrigger":462,"react-bootstrap/lib/Popover":470,"react-bootstrap/lib/Row":473,"react-bootstrap/lib/Tooltip":481,"react-dom":495}],745:[function(require,module,exports){
 'use strict';
 
 var React = require('react');
@@ -97450,6 +97300,145 @@ var QuickView = React.createClass({
 });
 module.exports = QuickView;
 
+},{"react":648,"react-bootstrap/lib/Button":418,"react-bootstrap/lib/Col":424,"react-bootstrap/lib/Grid":436,"react-bootstrap/lib/Image":437,"react-bootstrap/lib/Modal":446,"react-bootstrap/lib/OverlayTrigger":462,"react-bootstrap/lib/Popover":470,"react-bootstrap/lib/Row":473,"react-bootstrap/lib/Tooltip":481,"react-dom":495}],745:[function(require,module,exports){
+'use strict';
+
+var React = require('react');
+var ReactDOM = require('react-dom');
+var Modal = require('react-bootstrap/lib/Modal');
+var Button = require('react-bootstrap/lib/Button');
+var Popover = require('react-bootstrap/lib/Popover');
+var Tooltip = require('react-bootstrap/lib/Tooltip');
+var Image = require('react-bootstrap/lib/Image');
+var Grid = require('react-bootstrap/lib/Grid');
+var Row = require('react-bootstrap/lib/Row');
+var Col = require('react-bootstrap/lib/Col');
+
+var OverlayTrigger = require('react-bootstrap/lib/OverlayTrigger');
+
+var CartItem = React.createClass({
+    displayName: 'CartItem',
+    remove: function remove() {
+        Lockr.srem('cart', this.props.data);
+        //sound like the srem above does not work
+        console.log('cart: ', Lockr.smembers('cart'));
+        this.props.removeFn();
+    },
+    render: function render() {
+        var item = this.props.data;
+        return React.createElement(
+            Row,
+            { id: item._id },
+            React.createElement(
+                Col,
+                { xs: 1, md: 1 },
+                React.createElement(Image, { src: item.image, alt: 'Product image', responsive: true })
+            ),
+            React.createElement(
+                Col,
+                { xs: 2, md: 2 },
+                item.title
+            ),
+            React.createElement(
+                Col,
+                { xs: 2, md: 2 },
+                item.description
+            ),
+            React.createElement(
+                Col,
+                { xs: 1, md: 1 },
+                item.price
+            ),
+            React.createElement(
+                Col,
+                { xs: 6, md: 6 },
+                React.createElement(
+                    Button,
+                    { onClick: this.remove },
+                    'Remove ',
+                    item._id
+                )
+            )
+        );
+    }
+});
+
+var CartAdd = React.createClass({
+    displayName: 'CartAdd',
+    getInitialState: function getInitialState() {
+        return { showModal: true, data: this.props.data };
+    },
+    close: function close() {
+        this.setState({ showModal: false });
+    },
+    open: function open() {
+        this.setState({ showModal: true });
+    },
+    remove: function remove() {
+        console.log('removing');
+        this.setState({ showModal: true, data: Lockr.smembers('cart') });
+    },
+    render: function render() {
+        // let data = this.props.data;
+        var rows = [];
+        var that = this;
+        this.state.data.forEach(function (item) {
+            rows.push(React.createElement(CartItem, { data: item, removeFn: that.remove }));
+        });
+        return React.createElement(
+            'div',
+            null,
+            React.createElement(
+                'p',
+                null,
+                'Click to get the full Modal experience!'
+            ),
+            React.createElement(
+                Button,
+                {
+                    bsStyle: 'primary',
+                    bsSize: 'large',
+                    onClick: this.open,
+                    className: 'hidden'
+                },
+                'Launch demo modal'
+            ),
+            React.createElement(
+                Modal,
+                { show: this.state.showModal, onHide: this.close },
+                React.createElement(
+                    Modal.Header,
+                    { closeButton: true },
+                    React.createElement(
+                        Modal.Title,
+                        null,
+                        this.state.data.title
+                    )
+                ),
+                React.createElement(
+                    Modal.Body,
+                    null,
+                    React.createElement(
+                        Grid,
+                        null,
+                        rows
+                    )
+                ),
+                React.createElement(
+                    Modal.Footer,
+                    null,
+                    React.createElement(
+                        Button,
+                        { onClick: this.close },
+                        'Close'
+                    )
+                )
+            )
+        );
+    }
+});
+module.exports = CartAdd;
+
 },{"react":648,"react-bootstrap/lib/Button":418,"react-bootstrap/lib/Col":424,"react-bootstrap/lib/Grid":436,"react-bootstrap/lib/Image":437,"react-bootstrap/lib/Modal":446,"react-bootstrap/lib/OverlayTrigger":462,"react-bootstrap/lib/Popover":470,"react-bootstrap/lib/Row":473,"react-bootstrap/lib/Tooltip":481,"react-dom":495}],746:[function(require,module,exports){
 'use strict';
 
@@ -97511,7 +97500,31 @@ var Button = require('react-bootstrap/lib/Button');
 var ButtonGroup = require('react-bootstrap/lib/ButtonGroup');
 
 var QuickView = require('./RoomQuickView');
-var QuickAdd = require('./RoomQuickAdd');
+var CartAdd = require('./cart-add');
+// import FluxCart from './flux-cart';
+var products = {
+    id: '0011001',
+    name: 'Scotch.io Signature Lager',
+    image: 'scotch-beer.png',
+    description: 'The finest lager money can buy. Hints of keyboard aerosol, with a whiff of iKlear wipes on the nose. If you pass out while drinking this beverage, Chris Sevilleja personally tucks you in.',
+    variants: [{
+        sku: '123123',
+        type: '40oz Bottle',
+        price: 4.99,
+        inventory: 1
+
+    }, {
+        sku: '123124',
+        type: '6 Pack',
+        price: 12.99,
+        inventory: 5
+    }, {
+        sku: '1231235',
+        type: '30 Pack',
+        price: 19.99,
+        inventory: 3
+    }]
+};
 
 var endPoint = '/rooms';
 
@@ -97548,11 +97561,16 @@ var ItemList = React.createClass({
         ReactDOM.unmountComponentAtNode(actionsNode);
         ReactDOM.render(React.createElement(QuickView, { data: item }), document.getElementById('actions-section'));
     },
-    _onAdd: function _onAdd() {
+    _onAddToCart: function _onAddToCart(item) {
         var actionsNode = document.getElementById('actions-section');
         ReactDOM.unmountComponentAtNode(actionsNode);
-        ReactDOM.render(React.createElement(QuickAdd, null), document.getElementById('actions-section'));
-        store.addOK200Listener(this._onOK200);
+        //code to add product to local cart data with default quanty, variants
+        Lockr.sadd('cart', item);
+        //end of add product to local cart data
+
+        //show cart confirm component. make sure to have options to either update quanty, variants, proceed to buy or submit order
+        var cart = Lockr.smembers('cart');
+        ReactDOM.render(React.createElement(CartAdd, { data: cart }), document.getElementById('actions-section'));
     },
     _onOK200: function _onOK200() {
         var actionsNode = document.getElementById('actions-section');
@@ -97564,8 +97582,9 @@ var ItemList = React.createClass({
         data = this.state.data;
         var ItemComp = this.props.ItemComp;
         var onQuickViewFn = this._onQuickView;
+        var onAddToCartFn = this._onAddToCart;
         var ItemNodes = data.map(function (item) {
-            return React.createElement(ItemComp, { key: item._id, item: item, onQuickView: onQuickViewFn });
+            return React.createElement(ItemComp, { key: item._id, item: item, onQuickView: onQuickViewFn, onAddToCart: onAddToCartFn });
         });
 
         return React.createElement(
@@ -97576,23 +97595,45 @@ var ItemList = React.createClass({
     }
 });
 
+document.getElementById("viewCart").onclick = function () {
+    console.log('master, I am here');
+    var actionsNode = document.getElementById('actions-section');
+    ReactDOM.unmountComponentAtNode(actionsNode);
+    var cart = Lockr.smembers('cart');
+    ReactDOM.render(React.createElement(CartAdd, { data: cart }), document.getElementById('actions-section'));
+    return false;
+};
+
 module.exports = ItemList;
 
-},{"./RoomQuickAdd":744,"./RoomQuickView":745,"co":78,"co-request":77,"react":648,"react-bootstrap/lib/Button":418,"react-bootstrap/lib/ButtonGroup":419,"react-bootstrap/lib/ButtonInput":420,"react-bootstrap/lib/Col":424,"react-bootstrap/lib/Grid":436,"react-bootstrap/lib/Image":437,"react-bootstrap/lib/Input":438,"react-bootstrap/lib/Row":473,"react-dom":495}],748:[function(require,module,exports){
+},{"./RoomQuickView":744,"./cart-add":745,"co":78,"co-request":77,"react":648,"react-bootstrap/lib/Button":418,"react-bootstrap/lib/ButtonGroup":419,"react-bootstrap/lib/ButtonInput":420,"react-bootstrap/lib/Col":424,"react-bootstrap/lib/Grid":436,"react-bootstrap/lib/Image":437,"react-bootstrap/lib/Input":438,"react-bootstrap/lib/Row":473,"react-dom":495}],748:[function(require,module,exports){
 'use strict';
 
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
 var keyMirror = require('keymirror');
 
-module.exports = {
+var actionConstants = {
 
   ActionTypes: keyMirror({
     ADD_ROOM: null,
     UPDATE_ROOM: null,
     DEL_ROOM: null,
     OK200: null
+  }),
+  CartActionTypes: keyMirror({
+    CART_ADD: null, // Adds item to cart
+    CART_REMOVE: null, // Remove item from cart
+    CART_VISIBLE: null, // Shows or hides the cart
+    SET_SELECTED: null, // Selects a product option
+    RECEIVE_DATA: null // Loads our mock data
   })
-
 };
+
+exports.default = actionConstants;
+var ActionTypes = exports.ActionTypes = actionConstants.ActionTypes;
+var CartActionTypes = exports.CartActionTypes = actionConstants.CartActionTypes;
 
 },{"keymirror":304}],749:[function(require,module,exports){
 'use strict';
@@ -97601,7 +97642,7 @@ var Dispatcher = require('flux').Dispatcher;
 var assign = require('object-assign');
 
 var AppDispatcher = assign(new Dispatcher(), {
-    handleViewAction: function handleViewAction(action) {
+    handleAction: function handleAction(action) {
         this.dispatch({
             source: 'VIEW_ACTION',
             action: action
@@ -97610,6 +97651,7 @@ var AppDispatcher = assign(new Dispatcher(), {
 });
 
 module.exports = AppDispatcher;
+// export default AppDispatcher;
 
 },{"flux":247,"object-assign":381}],750:[function(require,module,exports){
 'use strict';
@@ -97623,16 +97665,75 @@ var _reactDom = require('react-dom');
 
 var _reactDom2 = _interopRequireDefault(_reactDom);
 
+var _productData = require('./product-data');
+
+var _productData2 = _interopRequireDefault(_productData);
+
+var _cartApi = require('./utils/cart-api');
+
+var _cartApi2 = _interopRequireDefault(_cartApi);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 var Room = require('./components/RoomListItem');
 var Item = require('./components/Item');
 var ItemList = require('./components/item-list');
-var RoomList = require('./components/RoomList');
+// var RoomList = require('./components/RoomList');
 var RoomStore = require('./stores/RoomStore');
+
+// Load Mock Product Data into localStorage
+_productData2.default.init();
+
+// Load Mock API Call
+_cartApi2.default.getProductData();
+
 _reactDom2.default.render(_react2.default.createElement(ItemList, { ItemComp: Item, store: RoomStore }), document.getElementById('rooms'));
 
-},{"./components/Item":741,"./components/RoomList":742,"./components/RoomListItem":743,"./components/item-list":747,"./stores/RoomStore":751,"react":648,"react-dom":495}],751:[function(require,module,exports){
+},{"./components/Item":742,"./components/RoomListItem":743,"./components/item-list":747,"./product-data":751,"./stores/RoomStore":752,"./utils/cart-api":753,"react":648,"react-dom":495}],751:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _stringify = require('babel-runtime/core-js/json/stringify');
+
+var _stringify2 = _interopRequireDefault(_stringify);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+exports.default = {
+  // Load Mock Product Data Into localStorage
+
+  init: function init() {
+    localStorage.clear();
+    localStorage.setItem('product', (0, _stringify2.default)([{
+      id: '0011001',
+      name: 'Scotch.io Signature Lager',
+      image: 'scotch-beer.png',
+      description: 'The finest lager money can buy. Hints of keyboard aerosol, with a whiff of iKlear wipes on the nose. If you pass out while drinking this beverage, Chris Sevilleja personally tucks you in.',
+      variants: [{
+        sku: '123123',
+        type: '40oz Bottle',
+        price: 4.99,
+        inventory: 1
+
+      }, {
+        sku: '123124',
+        type: '6 Pack',
+        price: 12.99,
+        inventory: 5
+      }, {
+        sku: '1231235',
+        type: '30 Pack',
+        price: 19.99,
+        inventory: 3
+      }]
+    }]));
+  }
+};
+
+},{"babel-runtime/core-js/json/stringify":17}],752:[function(require,module,exports){
 'use strict';
 
 var _stringify = require('babel-runtime/core-js/json/stringify');
@@ -97777,7 +97878,31 @@ roomStore.dispatchToken = AppDispatcher.register(function (action) {
 });
 module.exports = roomStore;
 
-},{"../constants/AppConstants":748,"../dispatcher/AppDispatcher":749,"babel-runtime/core-js/json/stringify":17,"babel-runtime/regenerator":30,"co":78,"co-request":77,"events":217,"object-assign":381,"request":659}]},{},[750])
+},{"../constants/AppConstants":748,"../dispatcher/AppDispatcher":749,"babel-runtime/core-js/json/stringify":17,"babel-runtime/regenerator":30,"co":78,"co-request":77,"events":217,"object-assign":381,"request":659}],753:[function(require,module,exports){
+'use strict';
+'use restrict';
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+var _fluxCartActions = require('../actions/flux-cart-actions');
+
+var _fluxCartActions2 = _interopRequireDefault(_fluxCartActions);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+exports.default = {
+
+    // Load mock product data from localStorage into ProductStore via Action
+
+    getProductData: function getProductData() {
+        var data = JSON.parse(localStorage.getItem('product'));
+        _fluxCartActions2.default.receiveProduct(data);
+    }
+};
+
+},{"../actions/flux-cart-actions":741}]},{},[750])
 
 
 //# sourceMappingURL=main.js.map

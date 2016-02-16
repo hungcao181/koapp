@@ -40,7 +40,7 @@ function create(__helpers) {
               "layout": __layoutHelper
             },
             function(out) {
-              out.w('<script src="js/main.js"></script>');
+              out.w('<script src="js/main.js"></script><script src="vendors/lockr.js"></script>');
             });
         },
         "*": {

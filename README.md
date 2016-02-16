@@ -14,3 +14,5 @@ try out https://github.com/GriddleGriddle/Griddle
 9) try out https://github.com/rackt/react-router
 10) Token Base Authenticate (done)
 
+11) Add to cart
+issue: remove from cart does not work

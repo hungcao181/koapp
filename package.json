@@ -1,6 +1,25 @@
 {
   "name": "koapp",
   "version": "1.0.0",
+  "eslintConfig": {
+    "env": {
+        "browser": true,
+        "node": true,
+        "es6": true,
+        "mocha": true
+    },
+    "parserOptions": {
+      "ecmaVersion": 6,
+      "sourceType": "module",
+      "ecmaFeatures": {
+        "jsx": true,
+        "impliedStrict": true
+      }
+    },
+    "rules": {
+        "semi": 2
+    }
+  },  
   "description": "an koa app from scratch",
   "main": "server.js",
   "scripts": {

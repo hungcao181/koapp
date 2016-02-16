@@ -11,7 +11,7 @@ class Comment extends React.Component{
         </h2>
         {this.props.children}
       </div>
-    )
+    );
   }
 }
 

@@ -1,7 +1,7 @@
 'use restrict';
 var React = require('react');
 var ReactDOM = require('react-dom');
-let Image = require('react-bootstrap/lib/Image');
+var Image = require('react-bootstrap/lib/Image');
 let Grid = require('react-bootstrap/lib/Grid');
 let Row = require('react-bootstrap/lib/Row');
 let Col = require('react-bootstrap/lib/Col');
