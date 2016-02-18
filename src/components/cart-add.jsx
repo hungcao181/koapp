@@ -13,9 +13,10 @@ let OverlayTrigger = require('react-bootstrap/lib/OverlayTrigger');
 
 var CartItem = React.createClass({
     remove() {
-        Lockr.srem('cart', this.props.data);
+        Lockr.srem('cart', {'_id':this.props.data._id});
         //sound like the srem above does not work 
-        console.log('cart: ',Lockr.smembers('cart'));
+        
+        console.log('removing ', this.props.data._id,' from cart: ',Lockr.smembers('cart'));
         this.props.removeFn();
     },
     render() {

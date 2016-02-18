@@ -16,3 +16,5 @@ try out https://github.com/GriddleGriddle/Griddle
 
 11) Add to cart
 issue: remove from cart does not work
+
+12) using redux
